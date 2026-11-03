@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zinova : du terrain à la décision, sans papier</title>
+<meta name="description" content="Zinova, la suite de gestion de la force de vente terrain pour la distribution parapharmaceutique en Tunisie : animatrices, délégués, commandes, congés et décisions.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1E33'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='700' font-size='20' fill='%23fff' text-anchor='middle'%3Ez%3C/text%3E%3Ccircle cx='25' cy='8' r='3.5' fill='%23EF9F3A'/%3E%3C/svg%3E">
+<style>
+@font-face{font-family:"Sora";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/sora-latin-600-normal.woff2") format("woff2")}
+@font-face{font-family:"Sora";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/sora-latin-700-normal.woff2") format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/manrope-latin-500-normal.woff2") format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/manrope-latin-600-normal.woff2") format("woff2")}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/manrope-latin-700-normal.woff2") format("woff2")}
+</style>
+<style>
+/* Mise en page : une bande de nuit (identité, journée terrain animée), puis des bandes claires qui alternent, chaque section une idée. */
+:root{
+  --nuit:#0F1E33; --nuit-2:#17294A; --lagon:#0B7F8C; --lagon-clair:#5CC4C9; --soleil:#EF9F3A; --soleil-fonce:#B86B12;
+  --fond:#F4F6F3; --surface:#FFFFFF; --texte:#0F1E33; --discret:#4A5568; --trait:#DCE3E2; --sur-nuit:#E8EFF0; --sur-nuit-2:#A9C1C6;
+  --ok:#1D7A4E; --ok-fond:#E3F2EA; --bientot:#8A5A0C; --bientot-fond:#FDF0DC; --futur:#3E4C8F; --futur-fond:#E8EBF8;
+  --affiche:"Sora", "Segoe UI", system-ui, sans-serif; --corps:"Manrope", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --fond:#0C1626; --surface:#132238; --texte:#E8EFF0; --discret:#A9B8C4; --trait:#24384F;
+  --ok:#7FD3A6; --ok-fond:#123326; --bientot:#F2C27A; --bientot-fond:#3A2A10; --futur:#AEB8F2; --futur-fond:#1E2550; --lagon:#2AA9B5; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --fond:#0C1626; --surface:#132238; --texte:#E8EFF0; --discret:#A9B8C4; --trait:#24384F;
+  --ok:#7FD3A6; --ok-fond:#123326; --bientot:#F2C27A; --bientot-fond:#3A2A10; --futur:#AEB8F2; --futur-fond:#1E2550; --lagon:#2AA9B5; color-scheme:dark;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fond);color:var(--texte);font-family:var(--corps);font-size:16px;line-height:1.6}
+h1,h2,h3{font-family:var(--affiche);text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+.bande{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.cadre{max-width:1180px;margin:0 auto}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lagon)}
+.nuit .eyebrow{color:var(--soleil)}
+.section{padding-block:88px;display:flex;flex-direction:column;gap:40px}
+.entete{display:flex;flex-direction:column;gap:12px;max-width:720px}
+.entete h2{font-size:clamp(28px,4vw,42px);line-height:1.15;font-weight:700}
+.entete p{color:var(--discret);font-size:17px}
+:focus-visible{outline:3px solid var(--soleil);outline-offset:3px;border-radius:4px}
+
+/* Navigation */
+.nuit{background:var(--nuit);color:var(--sur-nuit)}
+nav.haut{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px;flex-wrap:wrap}
+.marque{display:flex;align-items:center;gap:10px;font-family:var(--affiche);font-weight:700;font-size:22px;color:#fff;text-decoration:none}
+.logo{width:38px;height:38px;border-radius:10px;background:#fff;color:var(--nuit);display:grid;place-items:center;font-size:22px;position:relative;font-weight:700}
+.logo::after{content:"";position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:var(--soleil)}
+.liens{display:flex;gap:22px;flex-wrap:wrap;font-size:14.5px}
+.liens a{text-decoration:none;color:var(--sur-nuit-2)}
+.liens a:hover{color:#fff}
+
+/* Héros */
+.heros{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:56px;align-items:center;padding-block:56px 96px}
+.heros h1{font-size:clamp(38px,6vw,68px);line-height:1.04;font-weight:700;color:#fff;letter-spacing:-.02em}
+.heros h1 em{font-style:normal;color:var(--soleil)}
+.heros .accroche{font-size:18.5px;color:var(--sur-nuit-2);max-width:540px}
+.heros .gauche{display:flex;flex-direction:column;gap:26px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:var(--corps)}
+.btn-soleil{background:var(--soleil);color:var(--nuit)}
+.btn-soleil:hover{background:#F5B35C}
+.btn-ligne{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)}
+.btn-ligne:hover{box-shadow:inset 0 0 0 1.5px #fff}
+.faits{display:flex;gap:28px;flex-wrap:wrap;padding-top:8px;border-top:1px solid rgba(255,255,255,.12)}
+.fait{display:flex;flex-direction:column}
+.fait b{font-family:var(--affiche);font-size:26px;color:#fff}
+.fait span{font-size:13px;color:var(--sur-nuit-2)}
+
+/* Journée terrain */
+.journee{background:var(--nuit-2);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;position:relative}
+.journee .titre-j{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--sur-nuit-2);padding:2px 4px 6px}
+.journee .titre-j b{color:#fff;font-family:var(--affiche);font-size:15px}
+.etape{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:14px;align-items:center;background:#1E3358;border-radius:16px;padding:13px 16px;color:var(--sur-nuit)}
+.etape .h{font-variant-numeric:tabular-nums;font-size:13px;color:var(--sur-nuit-2)}
+.etape .q{font-size:14.5px;line-height:1.35}
+.etape .q small{display:block;color:var(--sur-nuit-2);font-size:12.5px}
+.pastille{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.p-ok{background:#16483A;color:#8EE0B6}
+.p-dp{background:#4A2420;color:#FFB4A6}
+.p-att{background:#4A3410;color:#FFD08A}
+.p-rang{background:#13505A;color:#9FE6EC}
+.etape.active{background:#24406C;box-shadow:inset 3px 0 0 var(--soleil)}
+@media (prefers-reduced-motion:no-preference){
+  .etape{transition:background .5s, box-shadow .5s}
+}
+
+/* Applications */
+.apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.app{background:var(--surface);border:1px solid var(--trait);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:12px}
+.app .ecran{font-size:12.5px;font-weight:700;color:var(--lagon);letter-spacing:.06em;text-transform:uppercase}
+.app h3{font-size:21px}
+.app p{color:var(--discret);font-size:15px}
+
+/* Rôles */
+.onglets{display:flex;gap:8px;flex-wrap:wrap}
+.onglet{font-family:var(--corps);font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:999px;border:1px solid var(--trait);background:var(--surface);color:var(--texte);cursor:pointer}
+.onglet[aria-selected="true"]{background:var(--nuit);color:#fff;border-color:var(--nuit)}
+:root[data-theme="dark"] .onglet[aria-selected="true"]{background:var(--lagon);border-color:var(--lagon)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .onglet[aria-selected="true"]{background:var(--lagon);border-color:var(--lagon)}}
+.panneau{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:32px;background:var(--surface);border:1px solid var(--trait);border-radius:24px;padding:32px}
+.panneau h3{font-size:26px}
+.panneau .qui{display:flex;flex-direction:column;gap:12px}
+.panneau .qui p{color:var(--discret)}
+.panneau .appareil{font-size:13.5px;font-weight:600;color:var(--lagon)}
+.liste{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
+.liste li{display:flex;gap:10px;font-size:15px;line-height:1.45}
+.liste li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--soleil)}
+
+/* Feuille de route */
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.colonne{background:var(--surface);border:1px solid var(--trait);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:16px}
+.colonne .tete{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.colonne h3{font-size:19px}
+.etat{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.e-ok{background:var(--ok-fond);color:var(--ok)}
+.e-bientot{background:var(--bientot-fond);color:var(--bientot)}
+.e-futur{background:var(--futur-fond);color:var(--futur)}
+.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.items li{display:flex;flex-direction:column;padding-bottom:12px;border-bottom:1px dashed var(--trait)}
+.items li:last-child{border-bottom:0;padding-bottom:0}
+.items b{font-size:15px}
+.items span{font-size:14px;color:var(--discret)}
+
+/* Assistant */
+.assistant{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+.bulles{display:flex;flex-direction:column;gap:12px;background:var(--nuit-2);border-radius:24px;padding:24px}
+.bulle{max-width:85%;padding:12px 16px;border-radius:16px;font-size:14.5px;line-height:1.45}
+.bulle.moi{align-self:flex-end;background:var(--soleil);color:var(--nuit);border-bottom-right-radius:4px}
+.bulle.z{background:#1E3358;color:var(--sur-nuit);border-bottom-left-radius:4px}
+.bulle.z b{color:#fff}
+.bientot-note{font-size:13px;color:var(--sur-nuit-2);text-align:center}
+
+/* Sécurité */
+.secu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.carte-s{padding:24px;border-top:3px solid var(--lagon);background:var(--surface);border-radius:0 0 16px 16px;display:flex;flex-direction:column;gap:8px}
+.carte-s h3{font-size:17px}
+.carte-s p{color:var(--discret);font-size:14.5px}
+
+/* Contact */
+.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:40px;align-items:center;padding-block:80px}
+.contact h2{font-size:clamp(28px,4vw,44px);color:#fff}
+.contact p{color:var(--sur-nuit-2)}
+.contact{align-items:start}
+.direct{display:flex;flex-direction:column;gap:6px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:14px;color:var(--sur-nuit-2)}
+.adresse{font-family:var(--affiche);font-size:20px;color:#fff;user-select:all;word-break:break-all}
+.lien-copie{align-self:flex-start;background:none;border:0;padding:0;color:var(--soleil);font:600 14px var(--corps);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.copie-etat{font-size:13px;color:var(--soleil);min-height:1.2em}
+.formulaire{background:var(--surface);color:var(--texte);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:16px}
+.ligne2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.champ{display:flex;flex-direction:column;gap:6px;border:0;padding:0;margin:0;min-width:0}
+.champ label,.champ legend{font-size:13.5px;font-weight:700}
+.champ legend{margin-bottom:6px}
+.formulaire input:not([type=checkbox]),.formulaire select,.formulaire textarea{font:15px var(--corps);color:var(--texte);background:var(--fond);border:1.5px solid var(--trait);border-radius:12px;padding:11px 13px;width:100%}
+.formulaire input:focus,.formulaire select:focus,.formulaire textarea:focus{outline:none;border-color:var(--lagon);box-shadow:0 0 0 3px rgba(11,127,140,.18)}
+.formulaire [aria-invalid="true"]{border-color:#C2412D}
+.choix{display:flex;flex-wrap:wrap;gap:8px}
+.choix label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;padding:8px 12px;border:1.5px solid var(--trait);border-radius:999px;cursor:pointer}
+.choix label:has(input:checked){border-color:var(--lagon);background:rgba(11,127,140,.1)}
+.choix input,.accord input{accent-color:var(--lagon);width:16px;height:16px}
+.accord{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--discret)}
+.accord input{margin-top:3px;flex:none}
+.err{font-size:12.5px;color:#C2412D;min-height:0}
+.compteur{font-size:12px;color:var(--discret);align-self:flex-end;font-variant-numeric:tabular-nums}
+.envoyer{align-self:flex-start}
+.resultat{background:var(--ok-fond);color:var(--ok);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5}
+@media (max-width:560px){.ligne2{grid-template-columns:minmax(0,1fr)}.formulaire{padding:20px}}
+footer{padding-block:28px;font-size:13.5px;color:var(--sur-nuit-2);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.1)}
+
+@media (max-width:920px){
+  .heros,.assistant,.contact,.panneau{grid-template-columns:minmax(0,1fr)}
+  .apps,.route,.secu{grid-template-columns:minmax(0,1fr)}
+  .section{padding-block:64px}
+}
+@media (max-width:560px){
+  .liste{grid-template-columns:minmax(0,1fr)}
+  .liens{gap:14px;font-size:13.5px}
+  .etape{grid-template-columns:44px minmax(0,1fr);}
+  .etape .pastille{grid-column:2;justify-self:start}
+  .panneau{padding:22px}
+}
+</style>
+
+</head>
+<body>
+<header class="nuit bande">
+  <div class="cadre">
+    <nav class="haut" aria-label="Navigation principale">
+      <a class="marque" href="#accueil"><span class="logo" aria-hidden="true">z</span>Zinova</a>
+      <div class="liens">
+        <a href="#applications">Applications</a>
+        <a href="#roles">Par métier</a>
+        <a href="#feuille-de-route">Feuille de route</a>
+        <a href="#securite">Sécurité</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+
+    <section class="heros" id="accueil">
+      <div class="gauche">
+        <p class="eyebrow">Distribution parapharmaceutique · Tunisie</p>
+        <h1>Du terrain à la décision, <em>sans papier.</em></h1>
+        <p class="accroche">Zinova réunit animatrices, délégués, superviseurs et direction sur une même plateforme. Chacun voit son travail, la direction voit tout, et chaque chiffre vient du terrain.</p>
+        <div class="actions">
+          <a class="btn btn-soleil" href="#contact">Demander une démonstration</a>
+          <a class="btn btn-ligne" href="#roles">Voir par métier</a>
+        </div>
+        <div class="faits" aria-label="Zinova en bref">
+          <div class="fait"><b>2</b><span>applications</span></div>
+          <div class="fait"><b>13</b><span>profils métier</span></div>
+          <div class="fait"><b>FR · EN</b><span>dans la langue de chacun</span></div>
+          <div class="fait"><b>1</b><span>société = 1 espace isolé</span></div>
+        </div>
+      </div>
+
+      <div class="journee" aria-label="Exemple d'une journée terrain dans Zinova">
+        <div class="titre-j"><b>Mardi, pharmacie du centre</b><span>exemple</span></div>
+        <div class="etape" data-etape>
+          <span class="h">09:12</span>
+          <span class="q">Check-in de l'animatrice<small>photo prise en direct, supprimée après la décision</small></span>
+          <span class="pastille p-ok">Validé</span>
+        </div>
+        <div class="etape" data-etape>
+          <span class="h">12:40</span>
+          <span class="q">Rapport d'animation<small>14 produits vendus, dont 2 à date proche</small></span>
+          <span class="pastille p-dp">DP 01/2027</span>
+        </div>
+        <div class="etape" data-etape>
+          <span class="h">14:05</span>
+          <span class="q">Commande et bon de livraison<small>grossiste choisi, photo du bon envoyée</small></span>
+          <span class="pastille p-att">À valider</span>
+        </div>
+        <div class="etape" data-etape>
+          <span class="h">15:30</span>
+          <span class="q">Coordinatrice<small>commande comparée au bon, puis validée</small></span>
+          <span class="pastille p-ok">Validée</span>
+        </div>
+        <div class="etape" data-etape>
+          <span class="h">18:00</span>
+          <span class="q">Ma prime, sur le téléphone<small>objectif du mois à 81 %, prime estimée</small></span>
+          <span class="pastille p-rang">Rang #3</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</header>
+
+<main>
+  <div class="bande" id="applications">
+    <section class="cadre section">
+      <div class="entete">
+        <p class="eyebrow">Une plateforme, deux applications</p>
+        <h2>Le bon écran pour chaque personne</h2>
+        <p>Chaque société a son espace, à son adresse, avec ses modules et sa licence. Personne ne voit les données d'une autre société.</p>
+      </div>
+      <div class="apps">
+        <article class="app">
+          <span class="ecran">Ordinateur</span>
+          <h3>Back-office</h3>
+          <p>Pour la direction, les responsables, la RH, les assistantes et la coordination : tableaux de bord, planning, validations, rentabilité, primes, commandes et matériel.</p>
+        </article>
+        <article class="app">
+          <span class="ecran">Smartphone et tablette</span>
+          <h3>Application terrain</h3>
+          <p>Installable sur le téléphone de l'animatrice et sur la tablette des délégués. Elle garde les brouillons sans réseau et les envoie dès que la connexion revient.</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="bande" id="roles" style="background:var(--surface)">
+    <section class="cadre section">
+      <div class="entete">
+        <p class="eyebrow">Par métier</p>
+        <h2>Ce que chacun fait avec Zinova</h2>
+        <p>Chaque profil a son menu, son guide d'utilisation et ses droits. Choisissez un métier.</p>
+      </div>
+      <div class="onglets" role="tablist" aria-label="Métiers">
+        <button class="onglet" role="tab" id="t-direction" aria-controls="p-role" aria-selected="true" data-role="direction">Direction</button>
+        <button class="onglet" role="tab" id="t-animation" aria-controls="p-role" aria-selected="false" data-role="animation">Responsable animatrices</button>
+        <button class="onglet" role="tab" id="t-animatrice" aria-controls="p-role" aria-selected="false" data-role="animatrice">Animatrice</button>
+        <button class="onglet" role="tab" id="t-delegues" aria-controls="p-role" aria-selected="false" data-role="delegues">Délégués et superviseurs</button>
+        <button class="onglet" role="tab" id="t-managers" aria-controls="p-role" aria-selected="false" data-role="managers">Managers</button>
+        <button class="onglet" role="tab" id="t-coordination" aria-controls="p-role" aria-selected="false" data-role="coordination">Coordination et marketing</button>
+        <button class="onglet" role="tab" id="t-rh" aria-controls="p-role" aria-selected="false" data-role="rh">RH et assistantes</button>
+      </div>
+      <div class="panneau" id="p-role" role="tabpanel" aria-labelledby="t-direction">
+        <div class="qui">
+          <span class="appareil" id="r-appareil">Ordinateur</span>
+          <h3 id="r-titre">Direction</h3>
+          <p id="r-texte">Elle voit l'activité de toute la société et fixe les règles du jeu : objectifs, taux de prime, classes de pharmacies.</p>
+        </div>
+        <ul class="liste" id="r-liste">
+          <li>Tableau de bord du mois : visites, animations, commandes, alertes</li>
+          <li>Rentabilité de chaque animation, frais compris</li>
+          <li>Classes A, B, C des pharmacies selon leur chiffre d'affaires</li>
+          <li>Produits vendus à date proche, par pharmacie</li>
+          <li>Objectifs mensuels et taux de prime</li>
+          <li>Primes calculées à partir des rapports validés, export Excel</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="bande" id="feuille-de-route">
+    <section class="cadre section">
+      <div class="entete">
+        <p class="eyebrow">Feuille de route</p>
+        <h2>Ce qui est en service, ce qui vient</h2>
+        <p>Zinova avance vite : de nouvelles fonctions arrivent chaque semaine, décidées avec les équipes qui l'utilisent.</p>
+      </div>
+      <div class="route">
+        <div class="colonne">
+          <div class="tete"><h3>Le terrain</h3><span class="etat e-ok">En service</span></div>
+          <ul class="items">
+            <li><b>Animations et check-in</b><span>planning du lundi au samedi, photo en direct, rapports et ventes</span></li>
+            <li><b>Visites des délégués</b><span>portefeuilles, alerte « déjà visitée », 5 dernières visites d'une cible</span></li>
+            <li><b>Superviseurs et équipes</b><span>groupes de délégués, inactivités validées au plus près</span></li>
+            <li><b>Circuit des commandes</b><span>grossiste, photo du bon de livraison, validation par la coordinatrice</span></li>
+            <li><b>Primes et rang</b><span>prime estimée en cours de mois, mois précédents, rang de l'animatrice</span></li>
+            <li><b>Pilotage</b><span>rentabilité, classes A, B, C, produits à date proche, statistiques</span></li>
+          </ul>
+        </div>
+        <div class="colonne">
+          <div class="tete"><h3>L'équipe et l'organisation</h3><span class="etat e-ok">En service</span></div>
+          <ul class="items">
+            <li><b>Ressources humaines</b><span>fiches employés, matériel et bon de remise, frais de transport</span></li>
+            <li><b>Packs et guide</b><span>packs de produits, aide d'utilisation par rôle</span></li>
+            <li><b>Messagerie et groupes</b><span>discussions entre collègues, groupes, bouton « Contacter » depuis une alerte</span></li>
+            <li><b>Tâches et coursiers</b><span>demandes de course, affectation, planning du jour du coursier</span></li>
+            <li><b>Congés et soldes</b><span>demande depuis tous les écrans, solde acquis chaque mois, certificat</span></li>
+            <li><b>Planification par quinzaine</b><span>deux pharmacies en alternance, une semaine sur deux</span></li>
+            <li><b>Notifications sonores</b><span>un bip et une carte quand l'onglet est en arrière-plan</span></li>
+            <li><b>Kilométrage GPS</b><span>kilomètres réels des voitures comparés aux visites</span></li>
+            <li><b>Pack promotionnel</b><span>testeurs, cadeaux, présentoir et animation incluse</span></li>
+          </ul>
+        </div>
+        <div class="colonne">
+          <div class="tete"><h3>Demain</h3><span class="etat e-futur">À l'étude</span></div>
+          <ul class="items">
+            <li><b>Assistant Zinova</b><span>poser une question en français et obtenir la réponse depuis vos données</span></li>
+            <li><b>Gestion de stock</b><span>stocks, entrées, sorties et alertes de rupture</span></li>
+            <li><b>Facturation</b><span>factures et suivi des règlements</span></li>
+            <li><b>Recouvrement</b><span>échéances clients, relances et suivi des encaissements</span></li>
+            <li><b>Comptabilité</b><span>écritures et liens avec votre cabinet comptable</span></li>
+            <li><b>Notifications sur le téléphone</b><span>même quand l'application est fermée</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bande nuit">
+    <section class="cadre section assistant">
+      <div class="entete">
+        <p class="eyebrow">Bientôt</p>
+        <h2 style="color:#fff">L'Assistant Zinova</h2>
+        <p style="color:var(--sur-nuit-2)">Une question, une réponse, sans chercher dans les tableaux. L'assistant ne lit que ce que votre rôle vous permet de voir.</p>
+      </div>
+      <div class="bulles" aria-label="Exemple de conversation avec l'Assistant Zinova, fonction à venir">
+        <div class="bulle moi">Quelles pharmacies de Sfax n'ont pas été visitées ce mois-ci ?</div>
+        <div class="bulle z"><b>7 pharmacies</b> de classe A ou B, dont 3 sans visite depuis plus de 60 jours. Je prépare la liste pour la planification de la semaine prochaine ?</div>
+        <div class="bulle moi">Oui, par délégué.</div>
+        <p class="bientot-note">Exemple de conversation, fonction à l'étude</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="bande" id="securite">
+    <section class="cadre section">
+      <div class="entete">
+        <p class="eyebrow">Sécurité et confiance</p>
+        <h2>Vos données restent les vôtres</h2>
+        <p>La sécurité est construite dans chaque écran et dans la base de données, pas ajoutée après coup.</p>
+      </div>
+      <div class="secu">
+        <div class="carte-s"><h3>Une société, un espace isolé</h3><p>Double protection, dans l'application et dans la base : une erreur donne un résultat vide, jamais les données d'une autre société.</p></div>
+        <div class="carte-s"><h3>Chacun voit son travail</h3><p>Les droits suivent le rôle. Une animatrice ne voit ni chiffre d'affaires ni les résultats de ses collègues.</p></div>
+        <div class="carte-s"><h3>Double authentification</h3><p>Code à usage unique pour la direction. Seul Zinova crée les comptes, chacun choisit son mot de passe.</p></div>
+        <div class="carte-s"><h3>Photos supprimées</h3><p>La photo de check-in est effacée dès la décision du responsable. La trace de la décision est conservée.</p></div>
+        <div class="carte-s"><h3>Chaque action tracée</h3><p>Les actions sensibles sont enregistrées dans un journal d'audit séparé, qui ne peut être ni modifié ni effacé.</p></div>
+        <div class="carte-s"><h3>Aucun traceur</h3><p>Ni publicité ni outil de mesure externe. Les polices et les fichiers sont servis par nos serveurs.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bande nuit" id="contact">
+    <section class="cadre contact">
+      <div class="entete">
+        <p class="eyebrow">Contact</p>
+        <h2>Voyons Zinova avec vos équipes</h2>
+        <p>Une démonstration de 45 minutes, sur vos métiers : animation, délégués, commandes, primes. Nous répondons sous 48 heures ouvrées.</p>
+        <div class="direct">
+          <span>Ou écrivez-nous directement</span>
+          <span class="adresse" id="adresse">contact@zinova.tn</span>
+          <button class="lien-copie" type="button" id="copier">Copier l'adresse</button>
+          <span class="copie-etat" id="copie-etat" role="status"></span>
+        </div>
+      </div>
+      <form class="formulaire" id="formulaire" novalidate>
+        <div class="ligne2">
+          <div class="champ"><label for="f-nom">Nom et prénom</label><input id="f-nom" name="nom" autocomplete="name" required><span class="err" id="e-nom"></span></div>
+          <div class="champ"><label for="f-societe">Société</label><input id="f-societe" name="societe" autocomplete="organization" required><span class="err" id="e-societe"></span></div>
+        </div>
+        <div class="ligne2">
+          <div class="champ"><label for="f-fonction">Fonction</label>
+            <select id="f-fonction" name="fonction" required>
+              <option value="">Choisir</option><option>Direction générale</option><option>Direction commerciale ou marketing</option><option>Responsable des animatrices</option><option>Responsable des délégués</option><option>Ressources humaines</option><option>Autre</option>
+            </select><span class="err" id="e-fonction"></span></div>
+          <div class="champ"><label for="f-effectif">Personnes sur le terrain</label>
+            <select id="f-effectif" name="effectif" required>
+              <option value="">Choisir</option><option>Moins de 10</option><option>10 à 30</option><option>31 à 80</option><option>Plus de 80</option>
+            </select><span class="err" id="e-effectif"></span></div>
+        </div>
+        <div class="ligne2">
+          <div class="champ"><label for="f-email">E-mail professionnel</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required><span class="err" id="e-email"></span></div>
+          <div class="champ"><label for="f-tel">Téléphone</label><input id="f-tel" name="telephone" type="tel" autocomplete="tel" inputmode="tel" placeholder="20 365 147"><span class="err" id="e-tel"></span></div>
+        </div>
+        <fieldset class="champ">
+          <legend>Ce qui vous intéresse</legend>
+          <div class="choix">
+            <label><input type="checkbox" name="interet" value="Animation terrain"> Animation terrain</label>
+            <label><input type="checkbox" name="interet" value="Délégués"> Délégués et visites</label>
+            <label><input type="checkbox" name="interet" value="Commandes"> Commandes</label>
+            <label><input type="checkbox" name="interet" value="RH"> RH et matériel</label>
+            <label><input type="checkbox" name="interet" value="Messagerie"> Messagerie</label>
+            <label><input type="checkbox" name="interet" value="Coursiers"> Tâches et coursiers</label>
+          </div>
+        </fieldset>
+        <div class="champ"><label for="f-message">Votre besoin</label><textarea id="f-message" name="message" rows="4" maxlength="1500" placeholder="Nombre de marques, régions couvertes, outil actuel…"></textarea><span class="compteur" id="c-message">0 / 1500</span></div>
+        <label class="accord"><input type="checkbox" id="f-accord" required> <span>J'accepte que Zinova utilise ces informations pour répondre à ma demande, et seulement pour cela.</span></label>
+        <span class="err" id="e-accord"></span>
+        <button class="btn btn-soleil envoyer" type="submit">Demander une démonstration</button>
+        <div class="resultat" id="resultat" role="status" hidden></div>
+      </form>
+    </section>
+    <div class="cadre">
+      <footer>
+        <span>© 2026 Zinova · Tunisie</span>
+        <span>Édition de logiciels et services informatiques</span>
+      </footer>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var roles={
+    direction:{a:"Ordinateur",t:"Direction",p:"Elle voit l'activité de toute la société et fixe les règles du jeu : objectifs, taux de prime, classes de pharmacies.",l:["Tableau de bord du mois : visites, animations, commandes, alertes","Rentabilité de chaque animation, frais compris","Classes A, B, C des pharmacies selon leur chiffre d'affaires","Produits vendus à date proche, par pharmacie","Objectifs mensuels et taux de prime","Primes calculées à partir des rapports validés, export Excel"]},
+    animation:{a:"Ordinateur",t:"Responsable animatrices",p:"Toutes les décisions arrivent dans une file, de la plus ancienne à la plus récente : rien n'attend sans qu'on le sache.",l:["Planning du lundi au samedi, conflits refusés","Affectation d'un mois entier, par quinzaine","Validation des check-in sur photo","Validation des rapports, date proche signalée","Demandes d'animation des délégués","Rentabilité et frais de transport"]},
+    animatrice:{a:"Smartphone",t:"Animatrice",p:"Elle prouve sa présence, remplit son rapport, suit ses commandes et voit sa prime se construire.",l:["Ma journée : pharmacie, horaire, consignes","Check-in avec photo prise en direct","Rapport de ventes, produit à date proche","Bon de livraison photographié","Ma prime du mois et mes mois précédents","Mon rang du mois, sans voir les autres"]},
+    delegues:{a:"Tablette en paysage",t:"Délégués et superviseurs",p:"Planifier, visiter, rendre compte et commander, même avec un réseau faible. Le superviseur encadre son groupe sans changer d'outil.",l:["Planning et compte rendu de visite","Alerte « déjà visitée » entre collègues","5 dernières visites d'une cible","Commande avec ou sans visite, grossiste au choix","Demande d'une fiche absente du référentiel","Mon groupe : inactivités, plannings, statistiques"]},
+    managers:{a:"Ordinateur",t:"Managers VP, VM et VMR",p:"Chaque Manager ne voit que ses équipes, découpées en groupes avec leurs superviseurs.",l:["Équipes, groupes et superviseurs","Visites réalisées par rapport à l'objectif","Inactivités validées en secours","Portefeuilles des délégués","Classes des médecins","Statistiques de l'équipe"]},
+    coordination:{a:"Ordinateur",t:"Coordination et marketing",p:"Une commande n'est plus un simple message : elle suit un circuit, avec une preuve et une décision.",l:["Toutes les commandes de la société","Comparaison avec la photo du bon de livraison","Validation, ou refus avec un motif","Correction et renvoi par l'auteur","Packs à préparer par le marketing","Historique de chaque commande"]},
+    rh:{a:"Ordinateur",t:"RH et assistantes",p:"Le matériel, les fiches et le suivi administratif, avec une trace de chaque action.",l:["Registre du matériel : PC, téléphones, tablettes, voitures","Bon de remise numéroté à faire signer","Frais de transport repris et relevés","Primes du mois et historique","Fiches employés, lues par la direction et dans le profil","Congés, soldes acquis chaque mois et certificat"]}
+  };
+  var onglets=[].slice.call(document.querySelectorAll('.onglet'));
+  var panneau=document.getElementById('p-role');
+  function afficher(cle, focus){
+    var r=roles[cle]; if(!r) return;
+    onglets.forEach(function(o){var sel=o.getAttribute('data-role')===cle;o.setAttribute('aria-selected',sel?'true':'false');o.tabIndex=sel?0:-1;if(sel){panneau.setAttribute('aria-labelledby',o.id);if(focus)o.focus();}});
+    document.getElementById('r-appareil').textContent=r.a;
+    document.getElementById('r-titre').textContent=r.t;
+    document.getElementById('r-texte').textContent=r.p;
+    var ul=document.getElementById('r-liste'); ul.innerHTML='';
+    r.l.forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
+  }
+  onglets.forEach(function(o,i){
+    o.tabIndex=i===0?0:-1;
+    o.addEventListener('click',function(){afficher(o.getAttribute('data-role'));});
+    o.addEventListener('keydown',function(e){
+      var j=null; if(e.key==='ArrowRight')j=(i+1)%onglets.length; if(e.key==='ArrowLeft')j=(i-1+onglets.length)%onglets.length;
+      if(j!==null){e.preventDefault();afficher(onglets[j].getAttribute('data-role'),true);}
+    });
+  });
+
+  var etapes=[].slice.call(document.querySelectorAll('[data-etape]'));
+  var reduit=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var n=0; etapes[0]&&etapes[0].classList.add('active');
+  if(!reduit&&etapes.length){setInterval(function(){etapes[n].classList.remove('active');n=(n+1)%etapes.length;etapes[n].classList.add('active');},2200);}
+
+  var bouton=document.getElementById('copier'), etat=document.getElementById('copie-etat');
+  bouton.addEventListener('click',function(){
+    var texte=document.getElementById('adresse').textContent;
+    function selectionner(){var s=window.getSelection(),r=document.createRange();r.selectNodeContents(document.getElementById('adresse'));s.removeAllRanges();s.addRange(r);etat.textContent="Adresse sélectionnée : copiez-la avec Ctrl+C.";}
+    try{navigator.clipboard.writeText(texte).then(function(){etat.textContent="Adresse copiée.";},selectionner);}catch(e){selectionner();}
+  });
+
+  var f=document.getElementById('formulaire');
+  var msg=document.getElementById('f-message'), cpt=document.getElementById('c-message');
+  msg.addEventListener('input',function(){cpt.textContent=msg.value.length+' / 1500';});
+  function erreur(id,texte){var c=document.getElementById('f-'+id),e=document.getElementById('e-'+id);e.textContent=texte||'';if(c)c.setAttribute('aria-invalid',texte?'true':'false');return !texte;}
+  function telephone(v){var d=v.replace(/[\s.\-]/g,'').replace(/^(\+216|00216)/,'');return d===''||/^[234579]\d{7}$/.test(d);}
+  ['nom','societe','fonction','effectif','email','tel','accord'].forEach(function(id){var c=document.getElementById('f-'+id);c.addEventListener(c.type==='checkbox'||c.tagName==='SELECT'?'change':'input',function(){erreur(id,'');});});
+  f.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var v=function(id){return document.getElementById('f-'+id).value.trim();};
+    var ok=true;
+    ok=erreur('nom',v('nom')?'':'Indiquez votre nom et prénom.')&&ok;
+    ok=erreur('societe',v('societe')?'':'Indiquez le nom de votre société.')&&ok;
+    ok=erreur('fonction',v('fonction')?'':'Choisissez votre fonction.')&&ok;
+    ok=erreur('effectif',v('effectif')?'':'Choisissez un nombre de personnes.')&&ok;
+    ok=erreur('email',/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v('email'))?'':'Indiquez une adresse e-mail valide, par exemple nom@societe.tn.')&&ok;
+    ok=erreur('tel',telephone(v('tel'))?'':'Indiquez un numéro tunisien à 8 chiffres, par exemple 20 365 147.')&&ok;
+    ok=erreur('accord',document.getElementById('f-accord').checked?'':'Cochez cette case pour que nous puissions vous répondre.')&&ok;
+    var res=document.getElementById('resultat');
+    if(!ok){res.hidden=true;var premier=f.querySelector('[aria-invalid="true"]');if(premier)premier.focus();return;}
+    var prenom=v('nom').split(/\s+/)[0];
+    res.textContent='Merci '+prenom+'. Votre demande est complète. Aperçu seulement : sur le site en ligne, ce bouton enverra votre demande à l\'équipe Zinova.';
+    res.hidden=false;
+  });
+})();
+</script>
+
+</body>
+</html>
