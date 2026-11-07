@@ -7,6 +7,8 @@
 <meta name="description" content="Zinova, le logiciel des laboratoires et distributeurs de parapharmacie en Tunisie pour leurs animatrices et leurs délégués : planning, check-in, visites, commandes, primes, rentabilité.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1E33'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='700' font-size='20' fill='%23fff' text-anchor='middle'%3Ez%3C/text%3E%3Ccircle cx='25' cy='8' r='3.5' fill='%23EF9F3A'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/sora-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.className='js'+(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference)').matches?' anim':'');</script>
 <style>
 @font-face{font-family:"Sora";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/sora-latin-600-normal.woff2") format("woff2")}
 @font-face{font-family:"Sora";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/sora-latin-700-normal.woff2") format("woff2")}
@@ -14,113 +16,230 @@
 @font-face{font-family:"Manrope";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/manrope-latin-600-normal.woff2") format("woff2")}
 @font-face{font-family:"Manrope";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/manrope-latin-700-normal.woff2") format("woff2")}
 :root{
-  --nuit:#0F1F33; --nuit-actif:#1C3048; --nuit-texte:#C9D5DD; --sarcelle:#028090; --sarcelle-texte:#015F6B; --soleil:#F2A541; --lagon:#2BB3BF;
-  --brume:#F6F8F7; --surface:#FFFFFF; --discret:#4A5868; --trait:#DCE3E8;
+  --nuit:#0F1F33; --nuit-actif:#1C3048; --nuit-trait:#2A4058; --nuit-texte:#C9D5DD; --sarcelle:#028090; --sarcelle-texte:#015F6B; --soleil:#F2A541; --lagon:#2BB3BF;
+  --brume:#F6F8F7; --surface:#FFFFFF; --discret:#4A5868; --trait:#DCE3E8; --trait-doux:#EAEFF2;
   --ok-fond:#E0F0EE; --ok:#015F6B; --att-fond:#FDEFD9; --att:#8A5300; --neutre-fond:#E4E8EE; --err-fond:#F9E1DE; --err:#8F2A1C;
   --titre:"Sora",system-ui,sans-serif; --texte:"Manrope",system-ui,sans-serif;
+  --entete:72px; --gouttiere:48px;
+  --douce:cubic-bezier(.2,.7,.2,1);
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:var(--entete)}
 body{margin:0;background:var(--brume);color:var(--nuit);font:500 16px/1.6 var(--texte);overflow-x:hidden}
-h1,h2,h3,h4{font-family:var(--titre);margin:0;text-wrap:balance}
+h1,h2,h3,h4,h5,h6{font-family:var(--titre);margin:0;text-wrap:balance}
 p{margin:0}
 a{color:var(--sarcelle-texte)}
 :focus-visible{outline:3px solid var(--sarcelle);outline-offset:3px;border-radius:6px}
-.cadre{max-width:1200px;margin:0 auto;padding:0 40px}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.cadre{max-width:1240px;margin:0 auto;padding:0 var(--gouttiere)}
 .pastille{display:inline-block;font:700 12px/1 var(--texte);padding:6px 10px;border-radius:999px;white-space:nowrap}
 .p-ok{background:var(--ok-fond);color:var(--ok)}
 .p-att{background:var(--att-fond);color:var(--att)}
 .p-neutre{background:var(--neutre-fond);color:var(--nuit)}
 .p-err{background:var(--err-fond);color:var(--err)}
-.btn{display:inline-flex;align-items:center;justify-content:center;height:50px;padding:0 24px;border-radius:12px;font:700 15.5px var(--texte);text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 26px;border-radius:14px;font:700 15.5px var(--texte);text-decoration:none;border:1px solid transparent;cursor:pointer;transition:background-color .2s,border-color .2s,transform .2s var(--douce)}
+.btn:active{transform:translateY(1px)}
 .btn-principal{background:var(--sarcelle);color:#fff}
 .btn-principal:hover{background:#016D7B}
 .btn-second{background:var(--surface);color:var(--nuit);border-color:var(--trait)}
 .btn-second:hover{border-color:var(--nuit)}
-/* La pastille découpée : un seul élément par écran, là où il faut agir */
+/* La pastille découpée : un seul Soleil par écran, là où il faut agir */
 .signal{position:relative}
 .signal::before{content:"";position:absolute;top:-13px;right:-13px;width:36px;height:36px;border-radius:50%;background:var(--fond-signal,var(--brume))}
 .signal::after{content:"";position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:var(--soleil)}
-
-.evitement{position:absolute;left:8px;top:-60px;z-index:30;background:var(--nuit);color:#fff;padding:10px 16px;border-radius:8px;font-weight:700}
+.evitement{position:absolute;left:8px;top:-60px;z-index:40;background:var(--nuit);color:#fff;padding:10px 16px;border-radius:8px;font-weight:700}
 .evitement:focus{top:8px}
-.nuit a{color:#fff}
-/* En-tête */
-.entete-site{position:sticky;top:0;z-index:20;background:rgba(246,248,247,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--trait)}
-.entete-site .cadre{display:flex;align-items:center;gap:32px;height:72px}
-.logo{height:32px;width:auto;display:block}
-.nav{display:flex;gap:26px;margin-left:auto}
-.nav a{color:var(--discret);text-decoration:none;font-weight:600;font-size:15px}
-.nav a:hover{color:var(--nuit)}
-.entete-site .actions{display:flex;align-items:center;gap:18px}
-.entete-site .actions a.lien{font-weight:700;font-size:15px;text-decoration:none;color:var(--nuit)}
-.entete-site .btn{height:42px;padding:0 18px;font-size:14.5px}
 
-/* Héros */
-.heros{position:relative;padding:72px 0 40px;overflow:hidden}
-.secteurs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.secteurs path{fill:none;stroke:#DCE3E8;stroke-width:1.2}
-.heros .cadre{position:relative}
-.heros-haut{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:64px;align-items:end}
-.heros h1{font-size:90px;white-space:nowrap;line-height:.98;letter-spacing:-.035em;font-weight:700}
-.heros .chapo{font-size:18px;color:var(--discret);margin-bottom:26px}
+/* En-tête, avec la tournée de la page qui avance au défilement */
+.entete-site{position:sticky;top:0;z-index:30;background:var(--brume);border-bottom:1px solid var(--trait)}
+.entete-site::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--sarcelle);transform:scaleX(var(--avance,0));transform-origin:left}
+.entete-site .cadre{display:flex;align-items:center;gap:32px;height:var(--entete)}
+.logo{height:32px;width:auto;display:block}
+.nav{display:flex;gap:28px;margin-left:auto}
+.nav a{color:var(--discret);text-decoration:none;font-weight:600;font-size:15px;position:relative;padding:6px 0}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:var(--sarcelle);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--douce)}
+.nav a:hover,.nav a[aria-current="true"]{color:var(--nuit)}
+.nav a:hover::after,.nav a[aria-current="true"]::after{transform:scaleX(1)}
+.entete-site .actions{display:flex;align-items:center;gap:18px}
+.entete-site .btn{height:42px;padding:0 18px;font-size:14.5px;border-radius:12px}
+
+/* ---------- Héros ---------- */
+.heros{position:relative;padding:60px 0 44px}
+.heros-haut{display:grid;grid-template-columns:auto minmax(0,430px);gap:56px;align-items:end;justify-content:space-between}
+.heros h1{font-size:clamp(50px,6.9vw,100px);white-space:nowrap;line-height:.94;letter-spacing:-.045em;font-weight:700}
+.heros h1 .l{display:block}
+.heros .chapo{font-size:18px;line-height:1.6;color:var(--discret);margin-bottom:26px}
 .heros .chapo b{color:var(--nuit);font-weight:700}
 .boutons{display:flex;gap:12px;flex-wrap:wrap}
+.anim .heros h1 .l{animation:monte .9s var(--douce) both}
+.anim .heros h1 .l+.l{animation-delay:.08s}
+@keyframes monte{from{opacity:0;transform:translateY(.25em)}to{opacity:1;transform:none}}
 
-/* La ligne de tournée */
-.tournee{position:relative;height:350px;margin-top:56px}
-.tournee svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.tournee svg path{fill:none;stroke:var(--sarcelle);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+/* La scène : carte des secteurs, ligne de tournée, arrêts */
+.scene-tournee{position:relative;height:360px;margin-top:64px}
+.maillage{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+.maillage .bords{fill:none;stroke:var(--trait);stroke-width:1;vector-effect:non-scaling-stroke}
+.maillage .sommets{fill:none;stroke:#C5D0D7;stroke-width:4;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.maillage .cellule{fill:var(--sarcelle);fill-opacity:.07;stroke:none}
+.trace{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.trace path{fill:none;stroke:var(--sarcelle);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0}
+.anim .trace path{animation:trace 4s .4s linear both}
+@keyframes trace{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.anim .maillage .cellule{animation:secteur 1s var(--d) var(--douce) both}
+@keyframes secteur{from{fill-opacity:0}to{fill-opacity:.07}}
+.repere{position:absolute;left:0;top:0;display:flex;gap:18px;align-items:flex-start}
+.repere svg{width:64px;height:122px;flex:none}
+.repere .pays{fill:var(--surface);stroke:#B7C4CC;stroke-width:1.2;stroke-linejoin:round}
+.repere .int{fill:none;stroke:var(--trait);stroke-width:1}
+.repere .ici{fill:var(--sarcelle)}
+.repere .ici-anneau{fill:none;stroke:var(--sarcelle);stroke-width:1.4}
+.horloge{padding-top:6px}
+.horloge small{display:block;font:600 13px var(--texte);color:var(--discret)}
+.horloge strong{display:block;font:700 44px/1.05 var(--titre);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-top:2px}
+.horloge span{display:block;font-size:13px;color:var(--discret);margin-top:6px}
+.arrets{list-style:none;margin:0;padding:0}
 .arret{position:absolute;width:0;height:0}
-.arret .point{position:absolute;left:-10px;top:-10px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:4px solid var(--sarcelle)}
-.arret.maintenant .point{left:-15px;top:-15px;width:30px;height:30px;border:none;background:var(--soleil);box-shadow:0 0 0 6px var(--brume),0 0 0 9px var(--soleil)}
-.arret .texte{position:absolute;left:-12px;width:230px;display:flex;flex-direction:column;gap:3px}
-.arret.bas .texte{top:24px}
-.arret.haut .texte{bottom:24px}
+.arret .point{position:absolute;left:-11px;top:-11px;width:22px;height:22px;border-radius:50%;background:var(--surface);border:4px solid var(--sarcelle)}
+.arret.maintenant .point{left:-16px;top:-16px;width:32px;height:32px;border:none;background:var(--soleil);box-shadow:0 0 0 6px var(--brume),0 0 0 9px var(--soleil)}
+.arret.maintenant .point::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--soleil);opacity:0}
+.anim .arret.maintenant .point::after{animation:pulse 2.6s 2.9s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+.arret .texte{position:absolute;left:-12px;width:232px;display:flex;flex-direction:column;gap:3px}
+.arret.bas .texte{top:26px}
+.arret.haut .texte{bottom:28px}
 .arret.droite .texte{left:auto;right:-12px;text-align:right;align-items:flex-end}
 .arret time{font:700 13px var(--texte);color:var(--discret);font-variant-numeric:tabular-nums}
-.arret b{font:700 16.5px/1.25 var(--titre)}
+.arret b{font:700 17px/1.25 var(--titre);letter-spacing:-.01em}
 .arret span{font-size:14.5px;color:var(--discret);line-height:1.4}
-.arret .pastille{align-self:flex-start;margin-top:4px}
+.arret .pastille{align-self:flex-start;margin-top:5px}
 .arret.droite .pastille{align-self:flex-end}
-.legende{margin-top:28px;font-size:13px;color:var(--discret)}
+.anim .arret .point{animation:point .55s var(--d) cubic-bezier(.3,1.6,.5,1) both}
+.anim .arret .texte{animation:apparait .7s calc(var(--d) + .08s) var(--douce) both}
+@keyframes point{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes apparait{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.legende{margin-top:30px;font-size:13px;color:var(--discret)}
 
-/* Sections */
-.section{padding:112px 0}
+/* ---------- Sections ---------- */
+.section{padding:128px 0}
 .blanc{background:var(--surface)}
-.tete{max-width:760px;margin-bottom:56px}
-.tete h2{font-size:48px;line-height:1.08;letter-spacing:-.02em;margin-bottom:18px}
-.tete p{font-size:18px;color:var(--discret)}
+.tete{max-width:780px;margin-bottom:64px}
+.tete h2{font-size:clamp(32px,4.1vw,54px);line-height:1.05;letter-spacing:-.03em;margin-bottom:20px}
+.tete p{font-size:18.5px;color:var(--discret);max-width:660px}
 
-/* Problème : le registre avant / avec */
+/* ---------- Le problème : registre à bascule ---------- */
+.probleme-tete{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:end;margin-bottom:56px}
+.probleme-tete .tete{margin-bottom:0}
+.bascule{border:0;margin:0;padding:5px;display:inline-grid;grid-template-columns:1fr 1fr;background:var(--brume);border:1px solid var(--trait);border-radius:16px;position:relative;min-width:320px}
+.bascule[hidden]{display:none}
+.bascule legend{padding:0}
+.bascule input{position:absolute;opacity:0;width:1px;height:1px}
+.bascule label{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;font:700 15px var(--texte);color:var(--discret);cursor:pointer;border-radius:12px;transition:color .3s}
+.bascule input:checked+label{color:var(--nuit)}
+.bascule input:focus-visible+label{outline:3px solid var(--sarcelle);outline-offset:2px}
+.bascule .curseur{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:12px;background:var(--surface);border:1px solid var(--trait);transition:transform .45s var(--douce)}
+.bascule[data-vue="apres"] .curseur{transform:translateX(100%)}
+.bascule label i{width:10px;height:10px;border-radius:50%;border:2px dashed #9AA8B3}
+.bascule label[for="v-apres"] i{border:2px solid var(--sarcelle)}
 .registre{border-top:2px solid var(--nuit)}
-.registre-tete,.ligne-r{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1.15fr);gap:40px}
+.registre-tete,.ligne-r{display:grid;grid-template-columns:36px 230px minmax(0,1fr) minmax(0,1.15fr);gap:0 36px}
 .registre-tete{padding:14px 0;border-bottom:1px solid var(--trait);font:700 14px var(--texte);color:var(--discret)}
 .registre-tete span:last-child{color:var(--sarcelle-texte)}
-.ligne-r{padding:26px 0;border-bottom:1px solid var(--trait);align-items:start}
-.ligne-r h3{font-size:19px;line-height:1.3}
-.avant{color:var(--discret);font-size:16px}
-.outil{display:inline-block;font:700 12px var(--texte);color:var(--discret);border:1px solid var(--trait);border-radius:999px;padding:3px 9px;margin-top:10px}
-.apres{font-size:16.5px;font-weight:600}
+.ligne-r{padding:30px 0;border-bottom:1px solid var(--trait);align-items:start;position:relative}
+.rail{position:relative;align-self:stretch;margin:-30px 0}
+.rail::before,.rail::after{content:"";position:absolute;left:16px;top:0;bottom:0;width:0}
+.rail::before{border-left:3px dashed #B7C4CC}
+.rail::after{border-left:3px solid var(--sarcelle);transform:scaleY(0);transform-origin:top;transition:transform .4s linear calc(var(--i)*.32s)}
+.ligne-r:first-of-type .rail::before,.ligne-r:first-of-type .rail::after{top:42px}
+.ligne-r:last-of-type .rail::before,.ligne-r:last-of-type .rail::after{bottom:auto;height:42px}
+.rail b{position:absolute;left:8px;top:34px;width:19px;height:19px;border-radius:50%;background:var(--surface);border:3px dashed #9AA8B3;z-index:1;transition:border-color .3s calc(var(--i)*.32s)}
+.ligne-r h3{font-size:20px;line-height:1.25;letter-spacing:-.01em}
+.outils{display:block;margin-top:10px}
+.outil{display:inline-block;font:700 12px var(--texte);color:var(--discret);border:1px solid var(--trait);border-radius:999px;padding:3px 10px}
+.outil-z{display:none;background:var(--ok-fond);color:var(--ok);border-color:transparent}
+.avant{color:var(--discret);font-size:16.5px}
+.apres{font-size:17px;font-weight:600}
+/* avec JavaScript : une colonne qui bascule */
+.js .registre-tete{display:none}
+.js .ligne-r{grid-template-columns:36px 260px minmax(0,1fr)}
+.js .textes{display:grid}
+.js .textes>p{grid-area:1/1;transition:opacity .45s var(--douce),transform .45s var(--douce),visibility 0s}
+.js .registre .avant{font-size:19px;line-height:1.55;color:var(--nuit);font-weight:500;max-width:640px}
+.js .registre .apres{font-size:19px;line-height:1.55;max-width:640px;opacity:0;visibility:hidden;transform:translateY(10px);transition-delay:calc(var(--i)*.06s),calc(var(--i)*.06s),.45s}
+.js .registre[data-vue="apres"] .avant{opacity:0;visibility:hidden;transform:translateY(-10px);transition-delay:0s,0s,.45s}
+.js .registre[data-vue="apres"] .apres{opacity:1;visibility:visible;transform:none;transition-delay:calc(var(--i)*.06s + .1s),calc(var(--i)*.06s + .1s),0s}
+.registre[data-vue="apres"] .rail::after{transform:scaleY(1)}
+.registre[data-vue="apres"] .rail b{border:3px solid var(--sarcelle)}
+.registre[data-vue="apres"] .outil-a{display:none}
+.registre[data-vue="apres"] .outil-z{display:inline-block}
+.registre[data-vue="avant"] .rail::after{transition-delay:0s;transition-duration:.2s}
 
-/* Métiers : scènes réelles */
-.scenes{display:grid;grid-template-columns:330px minmax(0,1fr);gap:56px;align-items:center;margin-bottom:96px}
-.scene figcaption{margin-top:18px;font-size:14.5px;color:var(--discret);max-width:420px}
-.scene figcaption b{color:var(--nuit);display:block;font:700 16px var(--titre);margin-bottom:2px}
+/* ---------- La journée qui défile ---------- */
+.journee{position:relative;margin-bottom:120px}
+.jr-horloge,.jr-jour{display:none}
+.jr-chapitres{display:flex;flex-direction:column;gap:96px}
+.jr-ch{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:center}
+.jr-texte{position:relative;padding-left:44px;max-width:440px}
+.jr-texte::before{content:"";position:absolute;left:0;top:4px;width:22px;height:22px;border-radius:50%;background:var(--surface);border:4px solid var(--sarcelle);box-sizing:border-box}
+.jr-texte time{display:block;font:700 13px var(--texte);color:var(--discret);font-variant-numeric:tabular-nums;margin-bottom:4px}
+.jr-texte h3{font-size:clamp(22px,2.2vw,28px);line-height:1.15;letter-spacing:-.02em;margin-bottom:8px}
+.jr-texte p{color:var(--discret);font-size:16.5px}
+.jr-appareil{display:flex;justify-content:center}
+.jr-appareil.tablette-cadre{justify-content:flex-start}
+/* mode collant : l'heure avance avec le défilement */
+.defile{height:340vh}
+.defile .jr-collant{position:sticky;top:var(--entete);height:calc(100vh - var(--entete));display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:1fr auto auto auto auto 1fr auto;column-gap:56px;padding:20px 0 30px}
+.defile .jr-chapitres,.defile .jr-ch{display:contents}
+.defile .jr-horloge{display:block;grid-column:1;grid-row:2;margin-bottom:34px}
+.defile .jr-texte{grid-column:1;padding:0 0 26px 44px;transition:opacity .4s}
+.defile .jr-ch:nth-child(1) .jr-texte{grid-row:3}
+.defile .jr-ch:nth-child(2) .jr-texte{grid-row:4}
+.defile .jr-ch:nth-child(3) .jr-texte{grid-row:5}
+.defile .jr-texte::after{content:"";position:absolute;left:9px;top:30px;bottom:-2px;width:4px;background:var(--trait);border-radius:2px}
+.defile .jr-ch:nth-child(3) .jr-texte::after{display:none}
+.defile .jr-ch.passe .jr-texte::after{background:var(--sarcelle)}
+.defile .jr-texte::before{border-color:#B7C4CC;transition:border-color .3s,background-color .3s}
+.defile .jr-ch.passe .jr-texte::before,.defile .jr-ch.actif .jr-texte::before{border-color:var(--sarcelle)}
+.defile .jr-ch.actif .jr-texte::before{background:var(--sarcelle);box-shadow:0 0 0 5px var(--ok-fond)}
+.defile .jr-texte h3{font-size:22px;transition:color .3s}
+.defile .jr-texte p{font-size:15.5px}
+.defile .jr-ch:not(.actif) .jr-texte h3{color:var(--discret)}
+.defile .jr-ch:not(.actif) .jr-texte p{display:none}
+.defile .jr-appareil{grid-column:2;grid-row:1/7;align-self:center;opacity:0;visibility:hidden;transform:translateY(32px) scale(.96);transition:opacity .55s var(--douce),transform .7s var(--douce),visibility 0s .7s}
+.defile .jr-ch.actif .jr-appareil{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.defile .jr-ch.passe .jr-appareil{transform:translateY(-32px) scale(.96)}
+.jr-horloge small{display:block;font:600 14px var(--texte);color:var(--discret)}
+.jr-horloge strong{display:block;font:700 clamp(72px,8vw,112px)/.95 var(--titre);letter-spacing:-.05em;font-variant-numeric:tabular-nums;margin:6px 0 14px}
+.jr-horloge span{display:flex;gap:10px;align-items:baseline;font-size:15px;color:var(--discret);min-height:1.6em}
+.jr-horloge span b{color:var(--nuit);font-weight:700}
+.defile .jr-jour{display:block;grid-column:1/-1;grid-row:7;position:relative;height:46px;margin-top:8px}
+.jr-jour .piste{position:absolute;left:0;right:0;top:9px;height:4px;border-radius:2px;background:var(--trait)}
+.jr-jour .rempli{position:absolute;left:0;top:9px;height:4px;border-radius:2px;background:var(--sarcelle);width:100%;transform:scaleX(var(--jour,0));transform-origin:left}
+.jr-jour .cran{position:absolute;top:3px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--surface);border:3px solid #B7C4CC;transition:border-color .3s}
+.jr-jour .cran.passe{border-color:var(--sarcelle)}
+.jr-jour .cran span{position:absolute;top:20px;left:50%;transform:translateX(-50%);font:700 12px var(--texte);color:var(--discret);font-variant-numeric:tabular-nums;white-space:nowrap}
+.jr-jour .cran:first-child span{left:0;transform:none}
+.jr-jour .cran:last-child span{left:auto;right:0;transform:none}
+
+/* Appareils dessinés */
 figure{margin:0}
-.telephone{width:300px;border-radius:40px;background:var(--nuit);padding:10px;margin:0 auto}
-.tel-ecran{border-radius:31px;overflow:hidden;background:var(--brume)}
+.telephone{width:300px;border-radius:42px;background:var(--nuit);padding:10px;flex:none}
+.tel-ecran{border-radius:33px;overflow:hidden;background:var(--nuit)}
 .tel-haut{background:var(--nuit);color:#fff;padding:22px 18px 18px}
-.tel-haut small{color:var(--nuit-texte);font-size:12px}
+.tel-haut small{color:var(--nuit-texte);font-size:12px;font-variant-numeric:tabular-nums}
 .tel-haut h4{font-size:22px;margin-top:2px}
-.tel-corps{padding:14px;display:flex;flex-direction:column;gap:12px}
+.tel-corps{background:var(--brume);padding:14px;display:flex;flex-direction:column;gap:12px}
 .carte-m{background:var(--surface);border:1px solid var(--trait);border-radius:16px;padding:14px}
 .carte-m .rang{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
 .carte-m h5{font:700 17px/1.25 var(--titre);margin:0}
 .carte-m .lieu{font-size:13px;color:var(--discret)}
 .carte-m .fenetre{font:700 13px var(--texte);color:var(--sarcelle-texte);margin:10px 0}
-.carte-m .action{height:44px;border-radius:12px;background:var(--sarcelle);color:#fff;font:700 14.5px var(--texte);display:flex;align-items:center;justify-content:center}
+.carte-m .action{height:44px;border-radius:12px;background:var(--sarcelle);color:#fff;font:700 14.5px var(--texte);display:flex;align-items:center;justify-content:center;transition:background-color .3s}
+.carte-m .action .ok{display:none}
+.carte-m.fait::before,.carte-m.fait::after{display:none}
+.carte-m.fait .action{background:var(--ok-fond);color:var(--ok)}
+.carte-m.fait .action .ok{display:inline}
+.carte-m.fait .action .faire{display:none}
 .prime-m small{font-size:12.5px;color:var(--discret)}
 .prime-m strong{display:block;font:700 30px/1.1 var(--titre);margin:2px 0 2px}
 .prime-m em{display:block;font-style:normal;font-size:12.5px;color:var(--discret);margin-bottom:8px}
@@ -129,8 +248,8 @@ figure{margin:0}
 .tel-onglets{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--trait);padding:10px 4px 14px;font:700 11px var(--texte);color:var(--discret);text-align:center}
 .tel-onglets span:first-child{color:var(--sarcelle-texte)}
 
-.tablette{background:var(--nuit);border-radius:30px;padding:12px;width:100%;max-width:760px}
-.tab-ecran{border-radius:20px;overflow:hidden;background:var(--brume);display:grid;grid-template-columns:52px minmax(0,.9fr) minmax(0,1.3fr);min-height:400px}
+.tablette{background:var(--nuit);border-radius:30px;padding:12px;width:100%;max-width:720px}
+.tab-ecran{border-radius:20px;overflow:hidden;background:var(--brume);display:grid;grid-template-columns:52px minmax(0,.9fr) minmax(0,1.3fr);min-height:420px}
 .tab-nav{background:var(--nuit);display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:16px}
 .tab-nav i{width:22px;height:22px;border-radius:7px;background:var(--nuit-actif)}
 .tab-nav i:first-child{background:var(--sarcelle)}
@@ -141,70 +260,199 @@ figure{margin:0}
 .visite b{display:block;font-size:13.5px}
 .visite span{color:var(--discret)}
 .visite.active{border:2px solid var(--sarcelle);padding:9px}
-.tab-detail{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.tab-detail{padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .tab-detail h5{font:700 19px var(--titre);margin:0}
 .tab-detail .lieu{font-size:13px;color:var(--discret);margin-top:-8px}
 .alerte{background:var(--att-fond);color:var(--att);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;line-height:1.4}
 .historique{background:var(--surface);border:1px solid var(--trait);border-radius:14px;padding:12px 14px}
 .historique h6{font:700 14px var(--titre);margin:0 0 6px}
 .historique ol{list-style:none;margin:0;padding:0}
-.historique li{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:8px;padding:6px 0;border-top:1px solid #EEF2F4;font-size:12.5px;align-items:center}
+.historique li{display:grid;grid-template-columns:80px minmax(0,1fr) auto;gap:8px;padding:6px 0;border-top:1px solid #EEF2F4;font-size:12.5px;align-items:center}
 .historique li:first-child{border-top:0}
 .historique time{color:var(--discret);font-variant-numeric:tabular-nums}
-.historique .non{color:var(--discret)}
 
-.metiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--nuit)}
-.metier{padding:30px 32px 34px 0;border-bottom:1px solid var(--trait)}
-.metier:not(:nth-child(3n+1)){padding-left:32px;border-left:1px solid var(--trait)}
-.appareil{display:flex;align-items:center;gap:8px;font:700 13px var(--texte);color:var(--sarcelle-texte);margin-bottom:10px}
+/* Ordinateur (tableau de bord, écrans de bureau) */
+.portable{width:100%;max-width:720px}
+.pc{background:var(--nuit);border-radius:18px;padding:9px;width:100%}
+.pc-barre{display:flex;justify-content:center;padding:2px 0 8px}
+.pc-adresse{font:600 11px var(--texte);color:var(--nuit-texte);background:var(--nuit-actif);border-radius:999px;padding:3px 14px}
+.pc-ecran{border-radius:10px;overflow:hidden;background:var(--brume);display:grid;grid-template-columns:46px minmax(0,1fr);min-height:380px}
+.pc-nav{background:var(--surface);border-right:1px solid var(--trait);display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:14px}
+.pc-nav i{width:20px;height:20px;border-radius:6px;background:var(--neutre-fond)}
+.pc-nav i:first-child{background:var(--nuit)}
+.pc-nav i.on{background:var(--sarcelle)}
+.pc-corps{padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pc-titre{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pc-titre h5{font:700 18px var(--titre);letter-spacing:-.01em}
+.pc-titre span{font-size:12.5px;color:var(--discret);font-variant-numeric:tabular-nums}
+.socle{height:14px;margin:0 -4%;background:#C9D2D9;border-radius:0 0 14px 14px;position:relative}
+.socle::after{content:"";position:absolute;left:50%;top:0;width:90px;height:5px;margin-left:-45px;background:#B3BEC6;border-radius:0 0 6px 6px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--trait);border-radius:12px;padding:11px 12px;min-width:0;--fond-signal:var(--brume)}
+.kpi small{display:block;font:700 11.5px/1.3 var(--texte);color:var(--discret)}
+.kpi strong{display:block;font:700 26px/1.1 var(--titre);letter-spacing:-.02em;margin:4px 0 4px;font-variant-numeric:tabular-nums}
+.kpi strong em{font-style:normal;font-size:14px;color:var(--discret);font-weight:600;letter-spacing:0}
+.kpi span{display:block;font-size:11.5px;color:var(--discret);line-height:1.35}
+.kpi .barre{height:6px;margin:6px 0 6px}
+.kpi .barre i{width:80%}
+.kpi strong{white-space:nowrap}
+.metier-ecran .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.metier-ecran .kpi{padding:9px 12px}
+.metier-ecran .kpi strong{font-size:22px;margin:2px 0}
+.pc-bas{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:10px}
+.bloc-m{background:var(--surface);border:1px solid var(--trait);border-radius:12px;padding:12px 14px;min-width:0}
+.bloc-m h6{font:700 13.5px var(--titre);margin-bottom:8px}
+.histo{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end;height:92px}
+.histo i{display:block;background:var(--sarcelle);border-radius:5px 5px 2px 2px;height:var(--h)}
+.histo i.auj{background:var(--nuit)}
+.histo-j{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;font:700 10.5px var(--texte);color:var(--discret);text-align:center;margin-top:5px}
+.lignes-m{list-style:none;margin:0;padding:0}
+.lignes-m li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 0;border-top:1px solid #EEF2F4;font-size:12.5px}
+.lignes-m li:first-child{border-top:0}
+.lignes-m .mt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.classe{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;font:700 11.5px var(--titre);background:var(--ok-fond);color:var(--ok)}
+.classe.b{background:var(--neutre-fond);color:var(--nuit)}
+.classe.c{background:var(--err-fond);color:var(--err)}
+.donnees{display:block;margin-top:14px;font-size:12.5px;color:var(--discret);text-align:center}
+
+/* ---------- Un écran par métier : onglets et bento ---------- */
+.roles-invite{font:700 15px var(--texte);color:var(--discret);margin-bottom:14px}
+.onglets{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:2px solid var(--nuit);margin-bottom:32px}
+.onglets[hidden]{display:none}
+.onglet{appearance:none;background:none;border:0;border-bottom:1px solid var(--trait);padding:18px 16px 20px 0;text-align:left;cursor:pointer;font:700 15.5px/1.25 var(--titre);color:var(--discret);position:relative;display:flex;flex-direction:column;gap:8px;transition:color .2s}
+.onglet+.onglet{padding-left:16px;border-left:1px solid var(--trait)}
+.onglet small{display:flex;align-items:center;gap:6px;font:700 12.5px var(--texte);color:var(--discret)}
+.onglet svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.onglet::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;border-radius:2px;background:var(--sarcelle);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--douce)}
+.onglet+.onglet::after{left:16px}
+.onglet:hover{color:var(--nuit)}
+.onglet[aria-selected="true"]{color:var(--nuit)}
+.onglet[aria-selected="true"] small{color:var(--sarcelle-texte)}
+.onglet[aria-selected="true"]::after{transform:scaleX(1)}
+.onglet:focus-visible{outline-offset:-3px}
+.metiers{display:flex;flex-direction:column;gap:56px}
+.metier{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"ecran tete" "ecran points";grid-template-rows:auto 1fr;gap:16px 56px;align-items:start}
+.metier[hidden]{display:none}
+.metier-ecran{grid-area:ecran;background:var(--surface);border:1px solid var(--trait);border-radius:28px;padding:40px 36px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;position:relative;overflow:hidden}
+.metier-ecran>*{position:relative}
+.metier-ecran .fond{position:absolute;inset:0;width:100%;height:100%}
+.metier-ecran .fond path{fill:none;stroke:var(--trait-doux);stroke-width:1;vector-effect:non-scaling-stroke}
+.metier-tete{grid-area:tete;padding-top:28px}
+.appareil{display:flex;align-items:center;gap:8px;font:700 13px var(--texte);color:var(--sarcelle-texte);margin-bottom:14px}
 .appareil svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.metier h3{font-size:22px;line-height:1.2;margin-bottom:10px}
-.metier .besoin{color:var(--discret);font-size:15.5px;margin-bottom:14px}
-.metier ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
-.metier li{position:relative;padding-left:20px;font-size:15px;line-height:1.45;font-weight:600}
-.metier li::before{content:"";position:absolute;left:2px;top:8px;width:8px;height:8px;border-radius:50%;border:2px solid var(--sarcelle)}
-.decideur{margin-top:56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:56px;background:var(--surface);border:1px solid var(--trait);border-radius:24px;padding:44px 48px}
-.decideur h3{font-size:30px;line-height:1.15;letter-spacing:-.01em;margin-bottom:12px}
-.decideur p{color:var(--discret)}
-.decideur dl{margin:0;display:grid;gap:18px}
-.decideur dt{font:700 17px var(--titre)}
-.decideur dd{margin:2px 0 0;color:var(--discret);font-size:15.5px}
+.metier h3{font-size:clamp(28px,2.8vw,38px);line-height:1.08;letter-spacing:-.03em;margin-bottom:16px}
+.metier .besoin{font-size:19px;line-height:1.5;color:var(--discret)}
+.metier-points{grid-area:points;align-self:end;list-style:none;margin:8px 0 0;padding:0;border-top:2px solid var(--nuit)}
+.metier-points li{position:relative;padding:16px 0 16px 34px;border-bottom:1px solid var(--trait);font-weight:600;font-size:16px;line-height:1.45}
+.metier-points li::before{content:"";position:absolute;left:3px;top:21px;width:14px;height:14px;border-radius:50%;border:3px solid var(--sarcelle);background:var(--brume);box-sizing:border-box}
+.js .metier.entre .metier-ecran>:not(.fond){animation:apparait .5s var(--douce) both}
+.js .metier.entre .metier-tete,.js .metier.entre .metier-points{animation:apparait .5s .06s var(--douce) both}
+html:not(.anim) .metier.entre *{animation:none!important}
+/* mini-écrans des métiers */
+.planning{display:grid;grid-template-columns:44px repeat(6,minmax(0,1fr));gap:4px;font-size:11px}
+.planning>b{font:700 10.5px var(--texte);color:var(--discret);text-align:center;padding-bottom:2px}
+.planning>span{font:700 11px var(--texte);color:var(--discret);align-self:center}
+.planning>i{height:30px;border-radius:7px;background:var(--surface);border:1px dashed var(--trait)}
+.planning>i.a{background:var(--ok-fond);border:1px solid #BFE0DB}
+.planning>i.x{background:var(--err-fond);border:1px solid #EFC3BC}
+.refus{font-size:11.5px;color:var(--err);font-weight:700;display:flex;align-items:center;gap:6px}
+.refus::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--err-fond);border:1px solid #EFC3BC}
+.file-m li{grid-template-columns:40px minmax(0,1fr) auto}
+.file-m .h{color:var(--discret);font-weight:700;font-variant-numeric:tabular-nums}
+.file-m li.premier{background:var(--att-fond);margin:0 -8px;padding:7px 8px;border-radius:9px;border-top:0;--fond-signal:var(--surface)}
+.btn-m{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:8px;background:var(--sarcelle);color:#fff;font:700 11.5px var(--texte)}
+.tableau-m{width:100%;border-collapse:collapse;font-size:12.5px}
+.tableau-m th{font:700 11px var(--texte);color:var(--discret);text-align:left;padding:0 0 6px}
+.tableau-m td{padding:8px 0;border-top:1px solid #EEF2F4;vertical-align:middle}
+.tableau-m .n{font-variant-numeric:tabular-nums;font-weight:700}
+.jauge{display:inline-block;width:56px;height:6px;border-radius:9px;background:var(--neutre-fond);overflow:hidden;vertical-align:middle;margin-left:6px}
+.jauge i{display:block;height:100%;background:var(--sarcelle);width:var(--w)}
+.prod{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;align-items:center;padding:9px 0;border-top:1px solid #EEF2F4;font-size:13px}
+.prod:first-of-type{border-top:0}
+.prod b{font-weight:700}
+.prod .q{font:700 15px var(--titre);font-variant-numeric:tabular-nums}
+.prod .pastille{grid-column:1;justify-self:start;font-size:11px;padding:4px 8px}
+.total-m{display:flex;justify-content:space-between;font-size:12.5px;color:var(--discret);padding-top:6px}
+.choix-m{display:flex;flex-direction:column;gap:6px}
+.choix-m span{display:flex;align-items:center;gap:8px;border:1px solid var(--trait);background:var(--surface);border-radius:10px;padding:8px 10px;font-size:12.5px}
+.choix-m span::before{content:"";width:12px;height:12px;border-radius:50%;border:2px solid #B7C4CC;flex:none;box-sizing:border-box}
+.choix-m span.on{border:2px solid var(--sarcelle);padding:7px 9px}
+.choix-m span.on::before{border:4px solid var(--sarcelle)}
+.calendrier{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.calendrier b{font:700 10.5px var(--texte);color:var(--discret);text-align:center}
+.calendrier i{height:24px;border-radius:6px;background:var(--surface);border:1px solid #EEF2F4;font:600 10.5px/24px var(--texte);font-style:normal;text-align:center;color:var(--discret)}
+.calendrier i.c{background:var(--ok-fond);border-color:#BFE0DB;color:var(--ok)}
+.calendrier i.f{background:var(--neutre-fond);border-color:var(--neutre-fond);color:var(--nuit)}
+.legende-m{display:flex;gap:14px;font-size:11px;color:var(--discret);margin-top:8px}
+.legende-m span{display:flex;align-items:center;gap:5px}
+.legende-m span::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--ok-fond);border:1px solid #BFE0DB}
+.legende-m span+span::before{background:var(--neutre-fond);border-color:var(--neutre-fond)}
+.tel-mini{width:270px}
 
-/* Mise en place : la tournée sur fond Nuit */
-.nuit{background:var(--nuit);color:#fff}
-.nuit .tete p{color:var(--nuit-texte)}
+/* Le bloc de décision */
+.decideur{margin-top:96px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:64px;background:var(--surface);border:1px solid var(--trait);border-radius:28px;padding:52px 56px}
+.decideur h3{font-size:clamp(26px,2.6vw,34px);line-height:1.1;letter-spacing:-.025em;margin-bottom:16px}
+.decideur>div>p{color:var(--discret);font-size:17px}
+.decideur dl{margin:0;border-top:2px solid var(--nuit)}
+.decideur dl>div{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:24px;padding:18px 0;border-bottom:1px solid var(--trait)}
+.decideur dt{font:700 17px/1.3 var(--titre)}
+.decideur dd{margin:0;color:var(--discret);font-size:15.5px}
+
+/* ---------- Mise en place : tournée horizontale ---------- */
 .etapes{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:relative;counter-reset:etape}
-.etapes::before{content:"";position:absolute;left:12px;right:calc(25% - 12px);top:15px;height:3px;background:var(--lagon);border-radius:2px}
-.etapes li{position:relative;padding:58px 28px 0 0;counter-increment:etape}
-.etapes li::before{content:counter(etape);position:absolute;left:0;top:0;width:33px;height:33px;border-radius:50%;background:var(--nuit);border:3px solid var(--lagon);display:grid;place-items:center;font:700 14px var(--titre);color:#fff}
-.etapes li:last-child::before{background:var(--soleil);border-color:var(--soleil);color:var(--nuit);box-shadow:0 0 0 6px var(--nuit)}
-.etapes h3{font-size:20px;line-height:1.25;margin-bottom:10px}
-.etapes p{color:var(--nuit-texte);font-size:15.5px}
+.etapes-zone{position:relative}
+.etapes-trace{position:absolute;left:0;right:0;top:0;height:80px;width:100%;overflow:visible}
+.etapes-trace path{fill:none;stroke:var(--sarcelle);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 1.6s linear}
+.anim .etapes-zone:not(.vu) .etapes-trace path{stroke-dashoffset:1}
+.etapes li{position:relative;padding:116px 36px 0 0;counter-increment:etape}
+.etapes li::before{content:counter(etape);position:absolute;left:0;top:43px;width:34px;height:34px;border-radius:50%;background:var(--surface);border:4px solid var(--sarcelle);display:grid;place-items:center;font:700 14px var(--titre);color:var(--nuit);box-sizing:border-box;transition:transform .5s cubic-bezier(.3,1.6,.5,1) calc(var(--i)*.4s)}
+.etapes li:nth-child(n+3)::before{top:3px}
+.etapes li:last-child::before{background:var(--soleil);border-color:var(--soleil);box-shadow:0 0 0 6px var(--surface)}
+.anim .etapes-zone:not(.vu) li::before{transform:scale(0)}
+.etapes li>*{transition:opacity .6s var(--douce) calc(var(--i)*.4s + .1s),transform .6s var(--douce) calc(var(--i)*.4s + .1s)}
+.anim .etapes-zone:not(.vu) li>*{opacity:0;transform:translateY(10px)}
+.etapes h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:12px}
+.etapes p{color:var(--discret);font-size:16px}
+.etapes code{font:inherit;color:var(--nuit);font-weight:700}
 
-/* Sécurité */
-.securite{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 48px}
-.securite div{padding:26px 0;border-top:1px solid var(--trait)}
-.securite h3{font-size:18.5px;line-height:1.3;margin-bottom:8px}
-.securite p{color:var(--discret);font-size:15.5px}
+/* ---------- Sécurité : Nuit ---------- */
+.nuit{background:var(--nuit);color:#fff}
+.nuit a{color:#fff}
+.securite-grille{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:72px}
+.securite-grille .tete{margin-bottom:0;position:sticky;top:calc(var(--entete) + 48px);align-self:start}
+.nuit .tete p{color:var(--nuit-texte)}
+.espaces{margin-top:48px;width:100%;max-width:340px;height:auto;display:block}
+.espaces .s{fill:none;stroke:var(--nuit-trait);stroke-width:1.2}
+.espaces .moi{fill:rgba(43,179,191,.14);stroke:var(--lagon);stroke-width:2}
+.espaces .pt{fill:var(--nuit-trait)}
+.espaces .pt-moi{fill:var(--lagon)}
+.espaces text{font:700 11px var(--texte);fill:var(--nuit-texte)}
+.securite{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px}
+.securite>div{padding:30px 0 34px;border-top:1px solid var(--nuit-trait)}
+.securite>div:nth-child(-n+2){border-top:2px solid #fff}
+.securite svg{width:34px;height:34px;stroke:var(--lagon);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:18px;display:block}
+.securite h3{font-size:19px;line-height:1.3;margin-bottom:8px}
+.securite p{color:var(--nuit-texte);font-size:15.5px}
 
-/* Contact */
-.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:start}
-.contact .tete{margin-bottom:28px}
-.contact ul{margin:0 0 28px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
-.contact li{padding-left:20px;position:relative;font-weight:600}
-.contact li::before{content:"";position:absolute;left:2px;top:8px;width:8px;height:8px;border-radius:50%;border:2px solid var(--sarcelle)}
+/* ---------- Contact ---------- */
+.contact{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:80px;align-items:start}
+.contact .tete{margin-bottom:32px}
+.contact ul{margin:0 0 32px;padding:0;list-style:none;border-top:2px solid var(--nuit)}
+.contact li{padding:14px 0 14px 32px;position:relative;font-weight:600;border-bottom:1px solid var(--trait)}
+.contact li::before{content:"";position:absolute;left:3px;top:19px;width:14px;height:14px;border-radius:50%;border:3px solid var(--sarcelle);box-sizing:border-box}
 .direct{font-size:15px;color:var(--discret)}
 .direct a{font-weight:700}
-.formulaire{background:var(--surface);border:1px solid var(--trait);border-radius:24px;padding:34px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.formulaire{background:var(--surface);border:1px solid var(--trait);border-radius:28px;padding:40px;display:grid;grid-template-columns:1fr 1fr;gap:20px;--fond-signal:var(--brume)}
 .formulaire .large{grid-column:1/-1}
 .champ{display:flex;flex-direction:column;gap:7px;min-width:0}
 .champ label{font:700 13px var(--texte);color:var(--discret)}
-.champ input,.champ select{height:48px;border:1px solid var(--trait);border-radius:12px;padding:0 13px;font:500 15px var(--texte);color:var(--nuit);background:var(--surface);width:100%}
+.champ input,.champ select{height:50px;border:1px solid var(--trait);border-radius:12px;padding:0 14px;font:500 15px var(--texte);color:var(--nuit);background:var(--surface);width:100%;transition:border-color .2s,box-shadow .2s}
+.champ input:hover,.champ select:hover,.champ textarea:hover{border-color:#B7C4CC}
 .champ input:focus,.champ select:focus{outline:none;border-color:var(--sarcelle);box-shadow:0 0 0 3px rgba(2,128,144,.16)}
 .formulaire .btn{grid-column:1/-1;justify-self:start}
 .formulaire .accord{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--discret)}
 .formulaire .accord input{margin-top:3px;flex:none;width:18px;height:18px;accent-color:var(--sarcelle)}
-.champ textarea{border:1px solid var(--trait);border-radius:12px;padding:11px 13px;font:500 15px/1.5 var(--texte);color:var(--nuit);background:var(--surface);width:100%;resize:vertical}
+.champ textarea{border:1px solid var(--trait);border-radius:12px;padding:12px 14px;font:500 15px/1.5 var(--texte);color:var(--nuit);background:var(--surface);width:100%;resize:vertical}
 .champ textarea:focus{outline:none;border-color:var(--sarcelle);box-shadow:0 0 0 3px rgba(2,128,144,.16)}
 .champ [aria-invalid="true"]{border-color:var(--err)}
 .err{font-size:12.5px;color:var(--err);font-weight:600}
@@ -214,73 +462,116 @@ figure{margin:0}
 .resultat[hidden]{display:none}
 .lien-copie{background:none;border:0;padding:0;margin-left:6px;color:var(--sarcelle-texte);font:700 15px var(--texte);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .copie-etat{display:block;min-height:1.4em;font-size:13.5px;color:var(--sarcelle-texte);font-weight:600}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
-.pied{background:var(--nuit);color:var(--nuit-texte);padding:48px 0 40px;font-size:14px}
+.pied{background:var(--nuit);color:var(--nuit-texte);padding:52px 0 44px;font-size:14px}
 .pied .cadre{display:grid;grid-template-columns:auto 1fr auto;gap:24px 48px;align-items:center}
 .pied p{max-width:520px}
 .pied a{color:#fff}
 
-@media (max-width:1100px){
-  .heros h1{font-size:72px}
-  .scenes{grid-template-columns:minmax(0,1fr);gap:48px}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.01ms!important;animation:none!important}
+}
+
+/* ---------- Adaptations ---------- */
+@media (max-width:1180px){
+  :root{--gouttiere:36px}
+  .heros-haut{grid-template-columns:minmax(0,1fr);gap:28px}
+  .heros .chapo{max-width:640px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .onglets{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .onglet:nth-child(4){padding-left:0;border-left:0}
+  .onglet:nth-child(4)::after{left:0}
+  .metier{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 40px}
 }
 @media (max-width:980px){
   .nav{display:none}
   .entete-site .actions{margin-left:auto}
-  .heros-haut{grid-template-columns:minmax(0,1fr);gap:24px}
-  .tournee{height:auto;margin-top:40px;padding-left:4px}
-  .tournee svg{display:none}
-  .arret{position:relative;width:auto;height:auto;left:auto!important;top:auto!important;padding:0 0 26px 34px}
-  .arret::before{content:"";position:absolute;left:8px;top:16px;bottom:-4px;width:4px;background:var(--sarcelle)}
-  .arret:last-of-type::before{display:none}
-  .arret .point,.arret.maintenant .point{left:0;top:2px}
-  .arret.maintenant .point{left:-1px;top:0;width:22px;height:22px;box-shadow:0 0 0 4px var(--brume),0 0 0 7px var(--soleil)}
+  .scene-tournee{height:auto;margin-top:48px}
+  .maillage,.repere,.trace{display:none}
+  .arret{position:relative;width:auto;height:auto;left:auto!important;top:auto!important;padding:0 0 28px 40px}
+  .arret::before{content:"";position:absolute;left:9px;top:18px;bottom:-4px;width:4px;background:var(--sarcelle)}
+  .arret:last-child::before{display:none}
+  .arret .point{left:0;top:2px}
+  .arret.maintenant .point{left:-1px;top:0;width:24px;height:24px;box-shadow:0 0 0 4px var(--brume),0 0 0 7px var(--soleil)}
   .arret .texte{position:static;width:auto}
   .arret.droite .texte{text-align:left;align-items:flex-start}
   .arret.droite .pastille{align-self:flex-start}
+  .anim .arret::before{animation:apparait .6s var(--d) var(--douce) both}
+  .probleme-tete{grid-template-columns:minmax(0,1fr);gap:28px}
   .registre-tete{display:none}
-  .ligne-r{grid-template-columns:minmax(0,1fr);gap:10px}
-  .apres::before{content:"Avec Zinova";display:block;font:700 13px var(--texte);color:var(--sarcelle-texte);margin-bottom:2px}
-  .metiers{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .metier,.metier:not(:nth-child(3n+1)){padding:28px 24px 30px 0;border-left:0}
-  .metier:nth-child(2n){padding-left:24px;border-left:1px solid var(--trait)}
-  .decideur,.contact{grid-template-columns:minmax(0,1fr);gap:36px}
-  .etapes{grid-template-columns:minmax(0,1fr) minmax(0,1fr);row-gap:40px}
-  .etapes::before{display:none}
-  .securite{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .ligne-r,.js .ligne-r{grid-template-columns:36px minmax(0,1fr);gap:10px 20px}
+  .ligne-r>.rail{grid-row:1/4}
+  html:not(.js) .apres::before{content:"Avec Zinova";display:block;font:700 13px var(--texte);color:var(--sarcelle-texte);margin-bottom:2px}
+  .jr-ch{grid-template-columns:minmax(0,1fr);gap:32px}
+  .jr-appareil,.jr-appareil.tablette-cadre{justify-content:flex-start}
+  .metier{grid-template-columns:minmax(0,1fr);grid-template-areas:"tete" "ecran" "points";grid-template-rows:none;gap:24px}
+  .metier-tete{padding-top:0}
+  .metier-ecran{min-height:0}
+  .decideur,.contact{grid-template-columns:minmax(0,1fr);gap:40px}
+  .securite-grille{grid-template-columns:minmax(0,1fr);gap:48px}
+  .securite-grille .tete{position:static}
+  .espaces{display:none}
   .pied .cadre{grid-template-columns:minmax(0,1fr)}
 }
-@media (max-width:620px){
-  body{font-size:15.5px}
-  .cadre{padding:0 16px}
-  .entete-site .cadre{height:64px;gap:12px}
-  .logo{height:26px}
-  .entete-site .actions{gap:12px}
-  .entete-site .btn{height:40px;padding:0 14px;font-size:13.5px}
-  .entete-site .btn .long{display:none}
-  .heros{padding:40px 0 24px}
-  .heros h1{font-size:50px;white-space:normal}
-  .heros .chapo{font-size:16.5px}
-  .boutons .btn{width:100%}
-  .section{padding:72px 0}
-  .tete{margin-bottom:36px}
-  .tete h2{font-size:32px}
-  .tete p{font-size:16.5px}
-  .telephone{width:280px}
-  .tab-ecran{grid-template-columns:minmax(0,1fr);min-height:0}
-  .tab-nav,.tab-liste{display:none}
-  .historique li{grid-template-columns:78px minmax(0,1fr) auto}
-  .metiers{grid-template-columns:minmax(0,1fr)}
-  .metier,.metier:not(:nth-child(3n+1)),.metier:nth-child(2n){padding:26px 0 28px;border-left:0}
-  .decideur{padding:30px 22px}
-  .decideur h3{font-size:24px}
-  .etapes{grid-template-columns:minmax(0,1fr);row-gap:0}
-  .etapes li{padding:0 0 30px 52px}
-  .etapes li::after{content:"";position:absolute;left:15px;top:36px;bottom:4px;width:3px;background:var(--lagon)}
+@media (max-width:760px){
+  .etapes{grid-template-columns:minmax(0,1fr)}
+  .etapes-trace{display:none}
+  .etapes li{padding:0 0 36px 58px}
+  .etapes li::before,.etapes li:nth-child(n+3)::before{top:0}
+  .etapes li::after{content:"";position:absolute;left:15px;top:38px;bottom:4px;width:4px;background:var(--sarcelle);border-radius:2px;transform-origin:top;transition:transform .5s linear calc(var(--i)*.4s + .2s)}
+  .anim .etapes-zone:not(.vu) li::after{transform:scaleY(0)}
   .etapes li:last-child::after{display:none}
   .securite{grid-template-columns:minmax(0,1fr)}
-  .formulaire{grid-template-columns:minmax(0,1fr);padding:22px}
+  .securite>div:nth-child(2){border-top:1px solid var(--nuit-trait)}
+  .decideur dl>div{grid-template-columns:minmax(0,1fr);gap:4px}
+}
+@media (max-width:620px){
+  :root{--entete:64px;--gouttiere:16px}
+  body{font-size:15.5px}
+  .entete-site .cadre{gap:12px}
+  .logo{height:26px}
+  .entete-site .btn{height:40px;padding:0 14px;font-size:13.5px}
+  .entete-site .btn .long{display:none}
+  .heros{padding:40px 0 28px}
+  .heros h1{font-size:clamp(44px,12.6vw,56px);white-space:normal;line-height:.98}
+  .heros .chapo{font-size:16.5px}
+  .boutons .btn{width:100%}
+  .section{padding:80px 0}
+  .tete{margin-bottom:40px}
+  .tete p{font-size:16.5px}
+  .bascule{min-width:0;width:100%}
+  .bascule label{padding:0 10px;font-size:14px}
+  .ligne-r,.js .ligne-r{grid-template-columns:26px minmax(0,1fr);gap:8px 14px;padding:26px 0}
+  .rail{margin:-26px 0}
+  .rail::before,.rail::after{left:10px}
+  .rail b{left:2px}
+  .js .registre .avant,.js .registre .apres{font-size:17px}
+  .ligne-r h3{font-size:18.5px}
+  .journee{margin-bottom:88px}
+  .jr-chapitres{gap:64px}
+  .jr-texte{padding-left:36px}
+  .telephone{width:min(290px,100%)}
+  .tab-ecran{grid-template-columns:minmax(0,1fr);min-height:0}
+  .tab-nav,.tab-liste{display:none}
+  .historique li{grid-template-columns:74px minmax(0,1fr) auto}
+  .pc-ecran{grid-template-columns:minmax(0,1fr);min-height:0}
+  .pc-nav{display:none}
+  .pc-corps{padding:12px}
+  .pc-bas{grid-template-columns:minmax(0,1fr)}
+  .kpi strong{font-size:22px}
+  .socle{margin:0 -2%}
+  .onglets{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .onglet,.onglet+.onglet{padding:14px 12px 16px 0;border-left:0}
+  .onglet:nth-child(2n){padding-left:12px;border-left:1px solid var(--trait)}
+  .onglet::after,.onglet+.onglet::after{left:0}
+  .onglet:nth-child(2n)::after{left:12px}
+  .onglet{font-size:14.5px}
+  .metier-ecran{padding:24px 12px 20px;border-radius:22px}
+  .metier .besoin{font-size:17px}
+  .planning{grid-template-columns:34px repeat(6,minmax(0,1fr));gap:3px}
+  .decideur{padding:30px 22px;margin-top:72px}
+  .formulaire{grid-template-columns:minmax(0,1fr);padding:24px 20px}
   .formulaire .large,.formulaire .accord,.resultat{grid-column:auto}
   .formulaire .btn{width:100%}
 }
@@ -289,7 +580,7 @@ figure{margin:0}
 <body>
 <a class="evitement" href="#principal">Aller au contenu</a>
 
-<header class="entete-site">
+<header class="entete-site" id="entete">
   <div class="cadre">
     <a href="#accueil" aria-label="Zinova, accueil"><svg xmlns="http://www.w3.org/2000/svg" class="logo" viewBox="0 0 465 120" role="img" aria-label="Zinova"><title>Zinova</title><defs><mask id="zn-gap-1"><rect width="120" height="120" fill="#fff"/><circle cx="100" cy="20" r="16.5" fill="#000"/></mask></defs><g mask="url(#zn-gap-1)"><rect x="10" y="14" width="96" height="96" rx="28" fill="#0F1F33"/><path d="M38 46 H78 L40 82 H80" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></g><circle cx="100" cy="20" r="14" fill="#F2A541"/><path d="M187.70 99.50L143.70 99.50L143.70 88.30L168.70 58.30L167.70 57L143.80 57L143.80 44.70L186.90 44.70L186.90 55.90L161.80 86L162.80 87.20L187.70 87.20L187.70 99.50ZM212.60 99.50L196.60 99.50L196.60 56.50L189.30 56.50L189.30 44.70L212.60 44.70L212.60 99.50ZM202.80 39.30L202.80 39.30Q198.30 39.30 196.15 36.95Q194 34.60 194 31L194 31Q194 27.30 196.15 24.95Q198.30 22.60 202.80 22.60Q207.30 22.60 209.45 24.95Q211.60 27.30 211.60 31L211.60 31Q211.60 34.60 209.45 36.95Q207.30 39.30 202.80 39.30ZM239.90 99.50L223.90 99.50L223.90 44.70L236.60 44.70L236.60 58.50Q237.10 56.20 237.90 54.20L237.90 54.20Q240 48.60 244.40 45.80Q248.80 43 255.10 43L255.10 43L255.80 43Q265.40 43 270.45 49.25Q275.50 55.50 275.50 68.20L275.50 68.20L275.50 99.50L259.50 99.50L259.50 67.30Q259.50 62.90 256.90 60.10Q254.30 57.30 249.90 57.30L249.90 57.30Q245.40 57.30 242.65 60.15Q239.90 63 239.90 67.60L239.90 67.60L239.90 99.50ZM312.30 101.40L312.30 101.40Q305.10 101.40 299.50 99.15Q293.90 96.90 290.05 93Q286.20 89.10 284.20 84.05Q282.20 79 282.20 73.40L282.20 73.40L282.20 71.10Q282.20 65.40 284.25 60.25Q286.30 55.10 290.25 51.20Q294.20 47.30 299.80 45.05Q305.40 42.80 312.30 42.80L312.30 42.80Q319.40 42.80 324.95 45.05Q330.50 47.30 334.40 51.20Q338.30 55.10 340.40 60.25Q342.50 65.40 342.50 71.10L342.50 71.10L342.50 73.40Q342.50 79 340.50 84.05Q338.50 89.10 334.65 93Q330.80 96.90 325.20 99.15Q319.60 101.40 312.30 101.40ZM312.30 87.90L312.30 87.90Q317 87.90 320.10 85.90Q323.20 83.90 324.85 80.30Q326.50 76.70 326.50 72.30L326.50 72.30Q326.50 67.60 324.80 64.05Q323.10 60.50 319.95 58.40Q316.80 56.30 312.30 56.30L312.30 56.30Q307.90 56.30 304.70 58.40Q301.50 60.50 299.85 64.05Q298.20 67.60 298.20 72.30L298.20 72.30Q298.20 76.70 299.80 80.30Q301.40 83.90 304.60 85.90Q307.80 87.90 312.30 87.90ZM386.20 99.50L360.80 99.50L344.40 44.70L360.90 44.70L372.60 86.20L374.90 86.20L385.00 44.70L400.40 44.70L386.20 99.50ZM452.20 99.50L439.50 99.50L439.50 89Q438.80 91.10 437.90 92.80L437.90 92.80Q435.60 96.70 431.65 98.80Q427.70 100.90 422 100.90L422 100.90Q416.10 100.90 411.65 98.80Q407.20 96.70 404.70 92.75Q402.20 88.80 402.20 83.30L402.20 83.30Q402.20 77.30 405.30 73.45Q408.40 69.60 414 67.75Q419.60 65.90 426.90 65.90L426.90 65.90L436.80 65.90L436.80 65.70Q436.80 61.50 434.80 59.40Q432.80 57.30 428.40 57.30L428.40 57.30Q426.20 57.30 422.60 57.40Q419 57.50 415.20 57.70Q411.40 57.90 408.30 58.10L408.30 58.10L408.30 44.60Q410.60 44.40 413.70 44.20Q416.80 44 420.10 43.90Q423.40 43.80 426.30 43.80L426.30 43.80Q434.70 43.80 440.45 46.20Q446.20 48.60 449.20 53.45Q452.20 58.30 452.20 65.90L452.20 65.90L452.20 99.50ZM436.80 79.20L436.80 74.80L426.80 74.80Q422.60 74.80 420.35 76.85Q418.10 78.90 418.10 82.40L418.10 82.40Q418.10 85.70 420.35 87.75Q422.60 89.80 426.80 89.80L426.80 89.80Q429.50 89.80 431.65 88.85Q433.80 87.90 435.20 85.60Q436.60 83.30 436.80 79.20L436.80 79.20Z" fill="#0F1F33"/></svg></a>
     <nav class="nav" aria-label="Navigation principale">
@@ -306,12 +597,9 @@ figure{margin:0}
 
 <main id="principal">
 <section class="heros" id="accueil" aria-labelledby="titre-heros">
-  <svg class="secteurs" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <path d="M820 0 L880 120 L1040 96 L1090 0 M880 120 L850 290 L1010 330 L1040 96 L1210 160 L1270 0 M1210 160 L1180 320 L1010 330 M1180 320 L1360 290 L1400 120 L1440 130 M1360 290 L1440 330 M1400 120 L1270 0"/>
-  </svg>
   <div class="cadre">
     <div class="heros-haut">
-      <h1 id="titre-heros">Le terrain,<br>le jour&nbsp;même.</h1>
+      <h1 id="titre-heros"><span class="l">Le terrain,</span> <span class="l">le jour&nbsp;même.</span></h1>
       <div>
         <p class="chapo">Zinova est le logiciel des <b>laboratoires et distributeurs de parapharmacie</b> pour leurs animatrices et leurs délégués. Chaque animation et chaque visite est prouvée sur place, chaque prime est calculée, et la direction voit tout le jour même.</p>
         <div class="boutons">
@@ -321,13 +609,37 @@ figure{margin:0}
       </div>
     </div>
 
-    <div class="tournee" role="list" aria-label="Exemple d'une journée dans Zinova">
-      <svg viewBox="0 0 1000 350" preserveAspectRatio="none" aria-hidden="true"><path d="M12 205 H268 L352 121 H692 L776 205 H988"/></svg>
-      <div class="arret bas" role="listitem" style="left:1.2%;top:205px"><i class="point"></i><div class="texte"><time>08:52</time><b>Check-in en pharmacie</b><span>Photo prise sur place, Pharmacie P05, Ariana</span><span class="pastille p-ok">Validé</span></div></div>
-      <div class="arret bas" role="listitem" style="left:26.8%;top:205px"><i class="point"></i><div class="texte"><time>10:30</time><b>Visite chez le Dr M01</b><span>Compte rendu saisi sur la tablette</span><span class="pastille p-ok">Réalisée</span></div></div>
-      <div class="arret haut maintenant" role="listitem" style="left:45%;top:121px"><i class="point"></i><div class="texte"><time>12:40</time><b>Rapport de ventes</b><span>14 produits vendus, dont 2 à date proche</span><span class="pastille p-att">À valider</span></div></div>
-      <div class="arret haut" role="listitem" style="left:69.2%;top:121px"><i class="point"></i><div class="texte"><time>15:10</time><b>Commande au grossiste</b><span>Parapharmacie P02, grossiste choisi</span><span class="pastille p-neutre">Envoyée</span></div></div>
-      <div class="arret bas droite" role="listitem" style="left:98.8%;top:205px"><i class="point"></i><div class="texte"><time>18:00</time><b>La direction voit la journée</b><span>Visites, animations, commandes et primes</span></div></div>
+    <div class="scene-tournee">
+      <svg class="maillage" viewBox="0 0 1000 360" preserveAspectRatio="none" aria-hidden="true">
+        <path class="cellule" style="--d:.3s" d="M-30 168 L73 215 L118 290 L-30 275Z"/>
+        <path class="cellule" style="--d:1.28s" d="M236 65 L324 106 L340 196 L208 216Z"/>
+        <path class="cellule" style="--d:2.1s" d="M324 106 L459 73 L498 200 L340 196Z"/>
+        <path class="cellule" style="--d:3.03s" d="M613 92 L693 88 L730 173 L560 195Z"/>
+        <path class="cellule" style="--d:4.3s" d="M961 174 L1060 188 L1060 287 L957 289Z"/>
+        <path class="bords" d="M-30 -30L65 -30 M65 -30L230 -30 M230 -30L357 -30 M357 -30L503 -30 M503 -30L573 -30 M573 -30L701 -30 M701 -30L858 -30 M858 -30L972 -30 M972 -30L1060 -30 M-30 75L109 80 M109 80L236 65 M236 65L324 106 M324 106L459 73 M459 73L613 92 M613 92L693 88 M693 88L852 68 M852 68L972 65 M972 65L1060 77 M-30 168L73 215 M73 215L208 216 M208 216L340 196 M340 196L498 200 M498 200L560 195 M560 195L730 173 M730 173L809 209 M809 209L961 174 M961 174L1060 188 M-30 275L118 290 M118 290L185 307 M185 307L314 279 M314 279L434 302 M434 302L561 291 M561 291L689 289 M689 289L854 292 M854 292L957 289 M957 289L1060 287 M-30 400L102 400 M102 400L184 400 M184 400L343 400 M343 400L450 400 M450 400L618 400 M618 400L753 400 M753 400L807 400 M807 400L933 400 M933 400L1060 400 M-30 -30L-30 75 M65 -30L109 80 M230 -30L236 65 M357 -30L324 106 M503 -30L459 73 M573 -30L613 92 M701 -30L693 88 M858 -30L852 68 M972 -30L972 65 M1060 -30L1060 77 M-30 75L-30 168 M109 80L73 215 M236 65L208 216 M324 106L340 196 M459 73L498 200 M613 92L560 195 M693 88L730 173 M852 68L809 209 M972 65L961 174 M1060 77L1060 188 M-30 168L-30 275 M73 215L118 290 M208 216L185 307 M340 196L314 279 M498 200L434 302 M560 195L561 291 M730 173L689 289 M809 209L854 292 M961 174L957 289 M1060 188L1060 287 M-30 275L-30 400 M118 290L102 400 M185 307L184 400 M314 279L343 400 M434 302L450 400 M561 291L618 400 M689 289L753 400 M854 292L807 400 M957 289L933 400 M1060 287L1060 400 M-30 75L73 215 M357 -30L236 65 M560 195L434 302 M693 88L809 209 M809 209L957 289 M73 215L185 307 M573 -30L693 88 M972 65L1060 188"/>
+        <path class="sommets" d="M109 80h0 M236 65h0 M324 106h0 M459 73h0 M613 92h0 M693 88h0 M852 68h0 M972 65h0 M73 215h0 M208 216h0 M340 196h0 M498 200h0 M560 195h0 M730 173h0 M809 209h0 M961 174h0 M118 290h0 M185 307h0 M314 279h0 M434 302h0 M561 291h0 M689 289h0 M854 292h0 M957 289h0"/>
+      </svg>
+      <div class="repere" aria-hidden="true">
+        <svg viewBox="0 0 100 192">
+          <path class="pays" d="M22 10 L34 5 L46 2 L54 8 L60 6 L66 4 L72 2 L75 10 L67 20 L64 28 L72 36 L78 44 L78 54 L72 64 L62 74 L56 84 L64 88 L70 94 L74 104 L76 114 L70 122 L66 140 L64 158 L58 176 L52 189 L48 170 L40 148 L30 128 L20 110 L14 92 L16 72 L10 54 L12 36 L16 22Z"/>
+          <path class="int" d="M54 8 L44 30 L16 22 M44 30 L64 28 M44 30 L56 48 L78 44 M56 48 L42 58 L10 54 M42 58 L40 84 L14 92 M40 84 L56 84 M56 48 L72 64 M40 84 L50 110 L20 110 M50 110 L74 104 M50 110 L54 140 L40 148 M54 140 L66 140"/>
+          <circle class="ici-anneau" cx="58" cy="11" r="7"/>
+          <circle class="ici" cx="58" cy="11" r="3.2"/>
+        </svg>
+        <div class="horloge">
+          <small>Mercredi 14/10, Grand Tunis</small>
+          <strong id="horloge-heros">18:00</strong>
+          <span>Une journée, cinq arrêts</span>
+        </div>
+      </div>
+      <svg class="trace" viewBox="0 0 1000 360" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M12 205 H268 L352 121 H692 L776 205 H988"/></svg>
+      <ol class="arrets" aria-label="Exemple d'une journée dans Zinova">
+        <li class="arret bas" style="left:1.2%;top:205px;--d:.4s"><i class="point"></i><div class="texte"><time>08:52</time><b>Check-in en pharmacie</b><span>Photo prise sur place, Pharmacie P05, Ariana</span><span class="pastille p-ok">Validé</span></div></li>
+        <li class="arret bas" style="left:26.8%;top:205px;--d:1.38s"><i class="point"></i><div class="texte"><time>10:30</time><b>Visite chez le Dr M01</b><span>Compte rendu saisi sur la tablette</span><span class="pastille p-ok">Réalisée</span></div></li>
+        <li class="arret haut maintenant" style="left:45%;top:121px;--d:2.21s"><i class="point"></i><div class="texte"><time>12:40</time><b>Rapport de ventes</b><span>14 produits vendus, dont 2 à date proche</span><span class="pastille p-att">À valider</span></div></li>
+        <li class="arret haut" style="left:69.2%;top:121px;--d:3.13s"><i class="point"></i><div class="texte"><time>15:10</time><b>Commande au grossiste</b><span>Parapharmacie P02, grossiste choisi</span><span class="pastille p-neutre">Envoyée</span></div></li>
+        <li class="arret bas droite" style="left:98.8%;top:205px;--d:4.4s"><i class="point"></i><div class="texte"><time>18:00</time><b>La direction voit la journée</b><span>Visites, animations, commandes et primes</span></div></li>
+      </ol>
     </div>
     <p class="legende">Exemple d'une journée dans Zinova. Le point jaune marque ce qui attend une décision. Lieux et personnes inventés.</p>
   </div>
@@ -335,17 +647,25 @@ figure{margin:0}
 
 <section class="section blanc" id="probleme" aria-labelledby="titre-probleme">
   <div class="cadre">
-    <div class="tete">
-      <h2 id="titre-probleme">Aujourd'hui, le terrain se raconte. Il ne se voit pas.</h2>
-      <p>La journée du terrain passe par trois outils qui ne se parlent pas : un fichier Excel, des groupes WhatsApp et du papier. Le directeur commercial apprend ce qui s'est passé des jours plus tard, et doit croire sur parole.</p>
+    <div class="probleme-tete">
+      <div class="tete">
+        <h2 id="titre-probleme">Aujourd'hui, le terrain se raconte. Il ne se voit pas.</h2>
+        <p>La journée du terrain passe par trois outils qui ne se parlent pas : un fichier Excel, des groupes WhatsApp et du papier. Le directeur commercial apprend ce qui s'est passé des jours plus tard, et doit croire sur parole.</p>
+      </div>
+      <fieldset class="bascule" id="bascule" data-vue="avant" hidden>
+        <legend class="sr">Afficher la journée</legend>
+        <span class="curseur" aria-hidden="true"></span>
+        <input type="radio" name="vue" id="v-avant" value="avant" checked><label for="v-avant"><i aria-hidden="true"></i>Aujourd'hui</label>
+        <input type="radio" name="vue" id="v-apres" value="apres"><label for="v-apres"><i aria-hidden="true"></i>Avec Zinova</label>
+      </fieldset>
     </div>
-    <div class="registre">
-      <div class="registre-tete" aria-hidden="true"><span></span><span>Aujourd'hui</span><span>Avec Zinova</span></div>
-      <div class="ligne-r"><div><h3>Le planning des animatrices</h3><span class="outil">Excel</span></div><p class="avant">Le planning circule par fichier. Deux animations se chevauchent et personne ne le voit avant le jour J.</p><p class="apres">Le planning est saisi dans Zinova et une animation qui en chevauche une autre est refusée. L'animatrice voit sa semaine sur son téléphone.</p></div>
-      <div class="ligne-r"><div><h3>La présence en pharmacie</h3><span class="outil">WhatsApp</span></div><p class="avant">Une photo envoyée dans un groupe, à une heure que personne ne peut vérifier.</p><p class="apres">Le check-in se fait avec une photo prise en direct, à l'heure du serveur. La responsable décide, puis la photo est effacée.</p></div>
-      <div class="ligne-r"><div><h3>Les visites des délégués</h3><span class="outil">Papier</span></div><p class="avant">Les comptes rendus arrivent en retard, ressaisis le vendredi, ou pas du tout.</p><p class="apres">Le délégué saisit son compte rendu sur la tablette. Une visite sans compte rendu à minuit compte comme non réalisée.</p></div>
-      <div class="ligne-r"><div><h3>Les primes</h3><span class="outil">À la main</span></div><p class="avant">Calculées en fin de mois sur un tableur, puis discutées une par une.</p><p class="apres">La prime est calculée à partir des rapports validés. Chaque animatrice suit sa prime estimée pendant le mois.</p></div>
-      <div class="ligne-r"><div><h3>Ce que rapporte une animation</h3><span class="outil">Inconnu</span></div><p class="avant">Personne ne sait si une journée en pharmacie a rapporté plus qu'elle n'a coûté.</p><p class="apres">Chaque animation a sa rentabilité, frais de transport compris, et chaque pharmacie sa classe A, B ou C.</p></div>
+    <div class="registre" id="registre" data-vue="avant">
+      <div class="registre-tete" aria-hidden="true"><span></span><span></span><span>Aujourd'hui</span><span>Avec Zinova</span></div>
+      <div class="ligne-r" style="--i:0"><div class="rail" aria-hidden="true"><b></b></div><div><h3>Le planning des animatrices</h3><span class="outils"><span class="outil outil-a">Excel</span><span class="outil outil-z" aria-hidden="true">Zinova</span></span></div><div class="textes"><p class="avant">Le planning circule par fichier. Deux animations se chevauchent et personne ne le voit avant le jour J.</p><p class="apres">Le planning est saisi dans Zinova et une animation qui en chevauche une autre est refusée. L'animatrice voit sa semaine sur son téléphone.</p></div></div>
+      <div class="ligne-r" style="--i:1"><div class="rail" aria-hidden="true"><b></b></div><div><h3>La présence en pharmacie</h3><span class="outils"><span class="outil outil-a">WhatsApp</span><span class="outil outil-z" aria-hidden="true">Zinova</span></span></div><div class="textes"><p class="avant">Une photo envoyée dans un groupe, à une heure que personne ne peut vérifier.</p><p class="apres">Le check-in se fait avec une photo prise en direct, à l'heure du serveur. La responsable décide, puis la photo est effacée.</p></div></div>
+      <div class="ligne-r" style="--i:2"><div class="rail" aria-hidden="true"><b></b></div><div><h3>Les visites des délégués</h3><span class="outils"><span class="outil outil-a">Papier</span><span class="outil outil-z" aria-hidden="true">Zinova</span></span></div><div class="textes"><p class="avant">Les comptes rendus arrivent en retard, ressaisis le vendredi, ou pas du tout.</p><p class="apres">Le délégué saisit son compte rendu sur la tablette. Une visite sans compte rendu à minuit compte comme non réalisée.</p></div></div>
+      <div class="ligne-r" style="--i:3"><div class="rail" aria-hidden="true"><b></b></div><div><h3>Les primes</h3><span class="outils"><span class="outil outil-a">À la main</span><span class="outil outil-z" aria-hidden="true">Zinova</span></span></div><div class="textes"><p class="avant">Calculées en fin de mois sur un tableur, puis discutées une par une.</p><p class="apres">La prime est calculée à partir des rapports validés. Chaque animatrice suit sa prime estimée pendant le mois.</p></div></div>
+      <div class="ligne-r" style="--i:4"><div class="rail" aria-hidden="true"><b></b></div><div><h3>Ce que rapporte une animation</h3><span class="outils"><span class="outil outil-a">Inconnu</span><span class="outil outil-z" aria-hidden="true">Zinova</span></span></div><div class="textes"><p class="avant">Personne ne sait si une journée en pharmacie a rapporté plus qu'elle n'a coûté.</p><p class="apres">Chaque animation a sa rentabilité, frais de transport compris, et chaque pharmacie sa classe A, B ou C.</p></div></div>
     </div>
   </div>
 </section>
@@ -357,100 +677,287 @@ figure{margin:0}
       <p>L'animatrice travaille sur son téléphone, le délégué sur une tablette, les responsables et la direction sur l'ordinateur. Chacun ne voit que ce qui le concerne.</p>
     </div>
 
-    <div class="scenes">
-      <figure class="scene">
-        <div class="telephone" aria-hidden="true">
-          <div class="tel-ecran">
-            <div class="tel-haut"><small>Mercredi 14/10, 08:50</small><h4>Ma journée</h4></div>
-            <div class="tel-corps">
-              <div class="carte-m signal" style="--fond-signal:var(--brume)">
-                <div class="rang"><span class="pastille p-ok">Confirmée</span><span style="font:700 13px var(--texte)">09:00 – 17:00</span></div>
-                <h5>Animation soin solaire</h5>
-                <p class="lieu">Pharmacie P05, Ariana</p>
-                <p class="fenetre">Check-in ouvert de 08:45 à 10:00</p>
-                <div class="action">Faire le check-in</div>
-              </div>
-              <div class="carte-m prime-m">
-                <small>Prime estimée d'octobre</small>
-                <strong>53 %</strong><em>de l'objectif du mois, 8 vendus sur 15</em>
-                <div class="barre"><i></i></div>
+    <div class="journee" id="journee">
+      <div class="jr-collant">
+        <div class="jr-horloge" aria-hidden="true">
+          <small>Mercredi 14/10</small>
+          <strong id="jr-heure">08:45</strong>
+          <span id="jr-evenement"><b>08:45</b>Check-in ouvert de 08:45 à 10:00</span>
+        </div>
+        <div class="jr-chapitres">
+          <figure class="jr-ch actif">
+            <figcaption class="jr-texte"><time>08:52</time><h3>Le téléphone de l'animatrice</h3><p>Sa journée, son check-in et sa prime, sans rien demander à personne.</p></figcaption>
+            <div class="jr-appareil" aria-hidden="true">
+              <div class="telephone">
+                <div class="tel-ecran">
+                  <div class="tel-haut"><small>Mercredi 14/10, <span data-heure>08:50</span></small><h4>Ma journée</h4></div>
+                  <div class="tel-corps">
+                    <div class="carte-m signal" id="carte-checkin">
+                      <div class="rang"><span class="pastille p-ok">Confirmée</span><span style="font:700 13px var(--texte)">09:00 – 17:00</span></div>
+                      <h5>Animation soin solaire</h5>
+                      <p class="lieu">Pharmacie P05, Ariana</p>
+                      <p class="fenetre">Check-in ouvert de 08:45 à 10:00</p>
+                      <div class="action"><span class="faire">Faire le check-in</span><span class="ok">Photo envoyée à 08:52</span></div>
+                    </div>
+                    <div class="carte-m prime-m">
+                      <small>Prime estimée d'octobre</small>
+                      <strong>53 %</strong><em>de l'objectif du mois, 8 vendus sur 15</em>
+                      <div class="barre"><i></i></div>
+                    </div>
+                  </div>
+                  <div class="tel-onglets"><span>Ma journée</span><span>Planning</span><span>Rapports</span><span>Profil</span></div>
+                </div>
               </div>
             </div>
-            <div class="tel-onglets"><span>Ma journée</span><span>Planning</span><span>Rapports</span><span>Profil</span></div>
-          </div>
-        </div>
-        <figcaption><b>Le téléphone de l'animatrice</b>Sa journée, son check-in et sa prime, sans rien demander à personne.</figcaption>
-      </figure>
+          </figure>
 
-      <figure class="scene">
-        <div class="tablette" aria-hidden="true">
-          <div class="tab-ecran">
-            <div class="tab-nav"><i></i><i></i><i></i><i></i><i></i></div>
-            <div class="tab-liste">
-              <h5>Jeudi 15/10</h5>
-              <div class="visite active"><time>09:00</time><div><b>Pharmacie P01</b><span>Tunis</span></div></div>
-              <div class="visite"><time>10:30</time><div><b>Dr M01, dermatologue</b><span>La Marsa</span></div></div>
-              <div class="visite"><time>12:00</time><div><b>Parapharmacie P02</b><span>Ariana</span></div></div>
-              <div class="visite"><time>14:30</time><div><b>Grossiste G03</b><span>Ben Arous</span></div></div>
-            </div>
-            <div class="tab-detail">
-              <h5>Pharmacie P01</h5>
-              <p class="lieu">Visite de 09:00, Tunis</p>
-              <div class="alerte">Déjà visitée le 09/10 par un collègue de l'équipe VP.</div>
-              <div class="historique">
-                <h6>5 dernières visites</h6>
-                <ol>
-                  <li><time>09/10/2026</time><span>VP 03, équipe VP</span><span class="pastille p-ok">Réalisée</span></li>
-                  <li><time>30/09/2026</time><span>VM 07, équipe VM</span><span class="pastille p-ok">Réalisée</span></li>
-                  <li><time>22/09/2026</time><span>VP 03, équipe VP</span><span class="pastille p-ok">Réalisée</span></li>
-                  <li><time>11/09/2026</time><span>VM 02, équipe VM</span><span class="pastille p-err">Non réalisée</span></li>
-                  <li><time>27/08/2026</time><span>VM 07, équipe VM</span><span class="pastille p-ok">Réalisée</span></li>
-                </ol>
+          <figure class="jr-ch">
+            <figcaption class="jr-texte"><time>10:30</time><h3>La tablette du délégué</h3><p>Avant d'entrer, il sait qui est passé avant lui et ce qui s'est dit.</p></figcaption>
+            <div class="jr-appareil tablette-cadre" aria-hidden="true">
+              <div class="tablette">
+                <div class="tab-ecran">
+                  <div class="tab-nav"><i></i><i></i><i></i><i></i><i></i></div>
+                  <div class="tab-liste">
+                    <h5>Mercredi 14/10</h5>
+                    <div class="visite active"><time>09:00</time><div><b>Pharmacie P01</b><span>Tunis</span></div></div>
+                    <div class="visite"><time>10:30</time><div><b>Dr M01, dermatologue</b><span>La Marsa</span></div></div>
+                    <div class="visite"><time>12:00</time><div><b>Parapharmacie P02</b><span>Ariana</span></div></div>
+                    <div class="visite"><time>14:30</time><div><b>Grossiste G03</b><span>Ben Arous</span></div></div>
+                  </div>
+                  <div class="tab-detail">
+                    <h5>Pharmacie P01</h5>
+                    <p class="lieu">Visite de 09:00, Tunis</p>
+                    <div class="alerte">Déjà visitée le 09/10 par un collègue de l'équipe VP.</div>
+                    <div class="historique">
+                      <h6>5 dernières visites</h6>
+                      <ol>
+                        <li><time>09/10/2026</time><span>VP 03, équipe VP</span><span class="pastille p-ok">Réalisée</span></li>
+                        <li><time>30/09/2026</time><span>VM 07, équipe VM</span><span class="pastille p-ok">Réalisée</span></li>
+                        <li><time>22/09/2026</time><span>VP 03, équipe VP</span><span class="pastille p-ok">Réalisée</span></li>
+                        <li><time>11/09/2026</time><span>VM 02, équipe VM</span><span class="pastille p-err">Non réalisée</span></li>
+                        <li><time>27/08/2026</time><span>VM 07, équipe VM</span><span class="pastille p-ok">Réalisée</span></li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </figure>
+
+          <figure class="jr-ch">
+            <figcaption class="jr-texte"><time>18:00</time><h3>L'ordinateur de la direction</h3><p>La direction voit la journée : visites, animations, commandes et primes.</p></figcaption>
+            <div class="jr-appareil" aria-hidden="true">
+              <div class="portable">
+                <div class="pc">
+                  <div class="pc-barre"><span class="pc-adresse">alpha.zinova.tn</span></div>
+                  <div class="pc-ecran">
+                    <div class="pc-nav"><i></i><i class="on"></i><i></i><i></i><i></i></div>
+                    <div class="pc-corps">
+                      <div class="pc-titre"><h5>La journée du terrain</h5><span>Mercredi 14/10, <span data-heure>18:00</span></span></div>
+                      <div class="kpis">
+                        <div class="kpi"><small>Visites réalisées</small><strong>23<em> / 28</em></strong><div class="barre"><i></i></div><span>Objectif ajusté aux heures disponibles</span></div>
+                        <div class="kpi"><small>Animations</small><strong>6</strong><span>réalisées, check-in validés</span></div>
+                        <div class="kpi"><small>Commandes</small><strong>4</strong><span>envoyées aux grossistes</span></div>
+                        <div class="kpi signal"><small>Rapports à valider</small><strong>1</strong><span>Pharmacie P05, 12:40</span></div>
+                      </div>
+                      <div class="pc-bas">
+                        <div class="bloc-m"><h6>Visites de la semaine</h6><div class="histo"><i style="--h:72%"></i><i style="--h:88%"></i><i class="auj" style="--h:80%"></i><i style="--h:4%"></i><i style="--h:4%"></i><i style="--h:4%"></i></div><div class="histo-j"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span></div></div>
+                        <div class="bloc-m"><h6>Rentabilité des animations</h6><ul class="lignes-m"><li><span>Pharmacie P05</span><span class="mt">412,500 DT</span><span class="classe">A</span></li><li><span>Parapharmacie P02</span><span class="mt">96,000 DT</span><span class="classe b">B</span></li><li><span>Pharmacie P11</span><span class="mt">−38,250 DT</span><span class="classe c">C</span></li></ul></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="socle"></div>
+              </div>
+            </div>
+          </figure>
         </div>
-        <figcaption><b>La tablette du délégué</b>Avant d'entrer, il sait qui est passé avant lui et ce qui s'est dit.</figcaption>
-      </figure>
+        <div class="jr-jour" aria-hidden="true">
+          <i class="piste"></i><i class="rempli"></i>
+          <span class="cran" style="left:1.3%"><span>08:52</span></span><span class="cran" style="left:18.9%"><span>10:30</span></span><span class="cran" style="left:42.3%"><span>12:40</span></span><span class="cran" style="left:69.4%"><span>15:10</span></span><span class="cran" style="left:100%"><span>18:00</span></span>
+        </div>
+      </div>
     </div>
 
-    <div class="metiers">
-      <article class="metier">
-        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
-        <h3>Directeur commercial</h3>
-        <p class="besoin">Savoir ce qui s'est vraiment passé cette semaine, sans attendre les fichiers du lundi.</p>
-        <ul><li>Visites réalisées face à l'objectif, ajusté aux heures disponibles</li><li>Animations, check-in en attente et commandes de la semaine</li><li>Rentabilité de chaque animation, frais compris</li></ul>
-      </article>
-      <article class="metier">
-        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
-        <h3>Responsable des animatrices</h3>
-        <p class="besoin">Planifier sans conflit et décider vite, sans courir après les photos.</p>
-        <ul><li>Planning du lundi au samedi, chevauchements refusés</li><li>Check-in à valider, du plus ancien au plus récent</li><li>Rapports de ventes et produits à date proche</li></ul>
-      </article>
-      <article class="metier">
-        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
-        <h3>Manager des délégués</h3>
-        <p class="besoin">Savoir qui a visité qui, et pourquoi une journée est restée vide.</p>
-        <ul><li>Visites par délégué et par équipe, VP, VM et VMR</li><li>Inactivités validées : congé, formation, réunion</li><li>Portefeuilles, groupes et superviseurs</li></ul>
-      </article>
-      <article class="metier">
-        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Téléphone</p>
-        <h3>Animatrice</h3>
-        <p class="besoin">Prouver sa journée en quelques gestes et savoir ce qu'elle gagne.</p>
-        <ul><li>Check-in avec une photo prise sur place</li><li>Rapport de ventes, produit à date proche signalé</li><li>Prime estimée en cours de mois, ses chiffres seulement</li></ul>
-      </article>
-      <article class="metier">
-        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M18.5 12h.01"/></svg>Tablette</p>
-        <h3>Délégué</h3>
-        <p class="besoin">Préparer sa visite, la rendre compte une fois, commander sur place.</p>
-        <ul><li>Planning et compte rendu de visite</li><li>5 dernières visites et alerte « déjà visitée »</li><li>Commande avec ou sans visite, grossiste au choix</li></ul>
-      </article>
-      <article class="metier">
-        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
-        <h3>Ressources humaines</h3>
-        <p class="besoin">Tenir les congés, le matériel et les frais sans relances par téléphone.</p>
-        <ul><li>Congés, soldes acquis chaque mois, calendrier des absences</li><li>Matériel remis, avec bon de remise</li><li>Frais de transport des animatrices</li></ul>
-      </article>
+    <div class="roles">
+      <p class="roles-invite" id="roles-invite">Choisissez un métier</p>
+      <div class="onglets" role="tablist" aria-labelledby="roles-invite" hidden>
+        <button class="onglet" type="button" role="tab" id="o-directeur" aria-controls="m-directeur"><small><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</small>Directeur commercial</button>
+        <button class="onglet" type="button" role="tab" id="o-responsable" aria-controls="m-responsable"><small><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</small>Responsable des animatrices</button>
+        <button class="onglet" type="button" role="tab" id="o-manager" aria-controls="m-manager"><small><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</small>Manager des délégués</button>
+        <button class="onglet" type="button" role="tab" id="o-animatrice" aria-controls="m-animatrice"><small><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Téléphone</small>Animatrice</button>
+        <button class="onglet" type="button" role="tab" id="o-delegue" aria-controls="m-delegue"><small><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M18.5 12h.01"/></svg>Tablette</small>Délégué</button>
+        <button class="onglet" type="button" role="tab" id="o-rh" aria-controls="m-rh"><small><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</small>Ressources humaines</button>
+      </div>
+
+      <div class="metiers">
+        <article class="metier" id="m-directeur" aria-labelledby="t-directeur">
+          <div class="metier-ecran" aria-hidden="true">
+            <svg class="fond" viewBox="0 0 700 500" preserveAspectRatio="none"><path d="M-20 -20L109 -20 M109 -20L229 -20 M229 -20L389 -20 M389 -20L474 -20 M474 -20L622 -20 M622 -20L720 -20 M-20 103L93 110 M93 110L222 107 M222 107L354 90 M354 90L495 126 M495 126L597 96 M597 96L720 116 M-20 262L125 235 M125 235L279 217 M279 217L402 229 M402 229L479 221 M479 221L609 256 M609 256L720 224 M-20 374L128 364 M128 364L253 348 M253 348L354 355 M354 355L511 366 M511 366L609 374 M609 374L720 368 M-20 520L108 520 M108 520L268 520 M268 520L392 520 M392 520L485 520 M485 520L624 520 M624 520L720 520 M-20 -20L-20 103 M109 -20L93 110 M229 -20L222 107 M389 -20L354 90 M474 -20L495 126 M622 -20L597 96 M720 -20L720 116 M-20 103L-20 262 M93 110L125 235 M222 107L279 217 M354 90L402 229 M495 126L479 221 M597 96L609 256 M720 116L720 224 M-20 262L-20 374 M125 235L128 364 M279 217L253 348 M402 229L354 355 M479 221L511 366 M609 256L609 374 M720 224L720 368 M-20 374L-20 520 M128 364L108 520 M253 348L268 520 M354 355L392 520 M511 366L485 520 M609 374L624 520 M720 368L720 520 M109 -20L222 107 M354 90L479 221 M-20 262L128 364 M479 221L609 374 M253 348L392 520 M622 -20L720 116"/></svg>
+            <div class="portable"><div class="pc"><div class="pc-barre"><span class="pc-adresse">alpha.zinova.tn</span></div><div class="pc-ecran"><div class="pc-nav"><i></i><i class="on"></i><i></i><i></i><i></i></div><div class="pc-corps">
+              <div class="pc-titre"><h5>Tableau de bord</h5><span>Semaine du 12/10/2026</span></div>
+              <div class="kpis">
+                <div class="kpi"><small>Visites réalisées</small><strong>112<em> / 140</em></strong><div class="barre"><i></i></div><span>Objectif ajusté</span></div>
+                <div class="kpi"><small>Animations</small><strong>18</strong><span>réalisées sur 21</span></div>
+                <div class="kpi signal"><small>Check-in en attente</small><strong>3</strong><span>Le plus ancien&nbsp;: 08:52</span></div>
+                <div class="kpi"><small>Commandes</small><strong>9</strong><span>de la semaine</span></div>
+              </div>
+              <div class="bloc-m"><h6>Rentabilité des animations, frais compris</h6><ul class="lignes-m"><li><span>Pharmacie P05, Ariana</span><span class="mt">412,500 DT</span><span class="classe">A</span></li><li><span>Parapharmacie P02, Ariana</span><span class="mt">96,000 DT</span><span class="classe b">B</span></li><li><span>Pharmacie P11, Ben Arous</span><span class="mt">−38,250 DT</span><span class="classe c">C</span></li></ul></div>
+            </div></div></div><div class="socle"></div></div>
+            <span class="donnees">Données inventées</span>
+          </div>
+          <div class="metier-tete">
+            <p class="appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+            <h3 id="t-directeur">Directeur commercial</h3>
+            <p class="besoin">Savoir ce qui s'est vraiment passé cette semaine, sans attendre les fichiers du lundi.</p>
+          </div>
+          <ul class="metier-points"><li>Visites réalisées face à l'objectif, ajusté aux heures disponibles</li><li>Animations, check-in en attente et commandes de la semaine</li><li>Rentabilité de chaque animation, frais compris</li></ul>
+        </article>
+
+        <article class="metier" id="m-responsable" aria-labelledby="t-responsable">
+          <div class="metier-ecran" aria-hidden="true">
+            <svg class="fond" viewBox="0 0 700 500" preserveAspectRatio="none"><path d="M-20 -20L109 -20 M109 -20L229 -20 M229 -20L389 -20 M389 -20L474 -20 M474 -20L622 -20 M622 -20L720 -20 M-20 103L93 110 M93 110L222 107 M222 107L354 90 M354 90L495 126 M495 126L597 96 M597 96L720 116 M-20 262L125 235 M125 235L279 217 M279 217L402 229 M402 229L479 221 M479 221L609 256 M609 256L720 224 M-20 374L128 364 M128 364L253 348 M253 348L354 355 M354 355L511 366 M511 366L609 374 M609 374L720 368 M-20 520L108 520 M108 520L268 520 M268 520L392 520 M392 520L485 520 M485 520L624 520 M624 520L720 520 M-20 -20L-20 103 M109 -20L93 110 M229 -20L222 107 M389 -20L354 90 M474 -20L495 126 M622 -20L597 96 M720 -20L720 116 M-20 103L-20 262 M93 110L125 235 M222 107L279 217 M354 90L402 229 M495 126L479 221 M597 96L609 256 M720 116L720 224 M-20 262L-20 374 M125 235L128 364 M279 217L253 348 M402 229L354 355 M479 221L511 366 M609 256L609 374 M720 224L720 368 M-20 374L-20 520 M128 364L108 520 M253 348L268 520 M354 355L392 520 M511 366L485 520 M609 374L624 520 M720 368L720 520 M109 -20L222 107 M354 90L479 221 M-20 262L128 364 M479 221L609 374 M253 348L392 520 M622 -20L720 116"/></svg>
+            <div class="portable"><div class="pc"><div class="pc-barre"><span class="pc-adresse">alpha.zinova.tn</span></div><div class="pc-ecran"><div class="pc-nav"><i></i><i></i><i class="on"></i><i></i><i></i></div><div class="pc-corps">
+              <div class="pc-titre"><h5>Planning des animatrices</h5><span>Semaine du 12/10/2026</span></div>
+              <div class="bloc-m">
+                <div class="planning">
+                  <span></span><b>Lun</b><b>Mar</b><b>Mer</b><b>Jeu</b><b>Ven</b><b>Sam</b>
+                  <span>A 01</span><i class="a"></i><i class="a"></i><i class="a"></i><i></i><i class="a"></i><i></i>
+                  <span>A 02</span><i></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="x"></i><i></i>
+                  <span>A 03</span><i class="a"></i><i></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i>
+                </div>
+                <p class="refus" style="margin-top:8px">A 02, vendredi : chevauchement refusé</p>
+              </div>
+              <div class="bloc-m signal" style="--fond-signal:var(--brume)"><h6>Check-in à valider, du plus ancien au plus récent</h6><ul class="lignes-m file-m"><li><span class="h">08:52</span><span>A 01, Pharmacie P05</span><span class="btn-m">Voir la photo</span></li><li><span class="h">09:04</span><span>A 03, Pharmacie P11</span><span class="btn-m">Voir la photo</span></li><li><span class="h">09:15</span><span>A 02, Parapharmacie P02</span><span class="btn-m">Voir la photo</span></li></ul></div>
+            </div></div></div><div class="socle"></div></div>
+            <span class="donnees">Données inventées</span>
+          </div>
+          <div class="metier-tete">
+            <p class="appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+            <h3 id="t-responsable">Responsable des animatrices</h3>
+            <p class="besoin">Planifier sans conflit et décider vite, sans courir après les photos.</p>
+          </div>
+          <ul class="metier-points"><li>Planning du lundi au samedi, chevauchements refusés</li><li>Check-in à valider, du plus ancien au plus récent</li><li>Rapports de ventes et produits à date proche</li></ul>
+        </article>
+
+        <article class="metier" id="m-manager" aria-labelledby="t-manager">
+          <div class="metier-ecran" aria-hidden="true">
+            <svg class="fond" viewBox="0 0 700 500" preserveAspectRatio="none"><path d="M-20 -20L109 -20 M109 -20L229 -20 M229 -20L389 -20 M389 -20L474 -20 M474 -20L622 -20 M622 -20L720 -20 M-20 103L93 110 M93 110L222 107 M222 107L354 90 M354 90L495 126 M495 126L597 96 M597 96L720 116 M-20 262L125 235 M125 235L279 217 M279 217L402 229 M402 229L479 221 M479 221L609 256 M609 256L720 224 M-20 374L128 364 M128 364L253 348 M253 348L354 355 M354 355L511 366 M511 366L609 374 M609 374L720 368 M-20 520L108 520 M108 520L268 520 M268 520L392 520 M392 520L485 520 M485 520L624 520 M624 520L720 520 M-20 -20L-20 103 M109 -20L93 110 M229 -20L222 107 M389 -20L354 90 M474 -20L495 126 M622 -20L597 96 M720 -20L720 116 M-20 103L-20 262 M93 110L125 235 M222 107L279 217 M354 90L402 229 M495 126L479 221 M597 96L609 256 M720 116L720 224 M-20 262L-20 374 M125 235L128 364 M279 217L253 348 M402 229L354 355 M479 221L511 366 M609 256L609 374 M720 224L720 368 M-20 374L-20 520 M128 364L108 520 M253 348L268 520 M354 355L392 520 M511 366L485 520 M609 374L624 520 M720 368L720 520 M109 -20L222 107 M354 90L479 221 M-20 262L128 364 M479 221L609 374 M253 348L392 520 M622 -20L720 116"/></svg>
+            <div class="portable"><div class="pc"><div class="pc-barre"><span class="pc-adresse">alpha.zinova.tn</span></div><div class="pc-ecran"><div class="pc-nav"><i></i><i></i><i></i><i class="on"></i><i></i></div><div class="pc-corps">
+              <div class="pc-titre"><h5>Visites par délégué</h5><span>Semaine du 12/10/2026</span></div>
+              <div class="bloc-m">
+                <table class="tableau-m"><thead><tr><th>Délégué</th><th>Équipe</th><th>Visites</th><th>Journée vide</th></tr></thead>
+                <tbody>
+                  <tr><td>VP 03</td><td>VP</td><td class="n">14 / 16<span class="jauge" style="--w:88%"><i></i></span></td><td></td></tr>
+                  <tr><td>VM 07</td><td>VM</td><td class="n">11 / 12<span class="jauge" style="--w:92%"><i></i></span></td><td></td></tr>
+                  <tr><td>VM 02</td><td>VM</td><td class="n">6 / 12<span class="jauge" style="--w:50%"><i></i></span></td><td><span class="pastille p-neutre">Congé, validé</span></td></tr>
+                  <tr><td>VMR 01</td><td>VMR</td><td class="n">0 / 8<span class="jauge" style="--w:0%"><i></i></span></td><td><span class="pastille p-neutre">Formation, validée</span></td></tr>
+                </tbody></table>
+              </div>
+              <div class="bloc-m"><h6>Portefeuille de VP 03</h6><ul class="lignes-m"><li><span>Groupe Tunis nord, superviseur VP 01</span><span class="mt">42 cibles</span><span></span></li></ul></div>
+            </div></div></div><div class="socle"></div></div>
+            <span class="donnees">Données inventées</span>
+          </div>
+          <div class="metier-tete">
+            <p class="appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+            <h3 id="t-manager">Manager des délégués</h3>
+            <p class="besoin">Savoir qui a visité qui, et pourquoi une journée est restée vide.</p>
+          </div>
+          <ul class="metier-points"><li>Visites par délégué et par équipe, VP, VM et VMR</li><li>Inactivités validées : congé, formation, réunion</li><li>Portefeuilles, groupes et superviseurs</li></ul>
+        </article>
+
+        <article class="metier" id="m-animatrice" aria-labelledby="t-animatrice">
+          <div class="metier-ecran" aria-hidden="true">
+            <svg class="fond" viewBox="0 0 700 500" preserveAspectRatio="none"><path d="M-20 -20L109 -20 M109 -20L229 -20 M229 -20L389 -20 M389 -20L474 -20 M474 -20L622 -20 M622 -20L720 -20 M-20 103L93 110 M93 110L222 107 M222 107L354 90 M354 90L495 126 M495 126L597 96 M597 96L720 116 M-20 262L125 235 M125 235L279 217 M279 217L402 229 M402 229L479 221 M479 221L609 256 M609 256L720 224 M-20 374L128 364 M128 364L253 348 M253 348L354 355 M354 355L511 366 M511 366L609 374 M609 374L720 368 M-20 520L108 520 M108 520L268 520 M268 520L392 520 M392 520L485 520 M485 520L624 520 M624 520L720 520 M-20 -20L-20 103 M109 -20L93 110 M229 -20L222 107 M389 -20L354 90 M474 -20L495 126 M622 -20L597 96 M720 -20L720 116 M-20 103L-20 262 M93 110L125 235 M222 107L279 217 M354 90L402 229 M495 126L479 221 M597 96L609 256 M720 116L720 224 M-20 262L-20 374 M125 235L128 364 M279 217L253 348 M402 229L354 355 M479 221L511 366 M609 256L609 374 M720 224L720 368 M-20 374L-20 520 M128 364L108 520 M253 348L268 520 M354 355L392 520 M511 366L485 520 M609 374L624 520 M720 368L720 520 M109 -20L222 107 M354 90L479 221 M-20 262L128 364 M479 221L609 374 M253 348L392 520 M622 -20L720 116"/></svg>
+            <div class="telephone tel-mini"><div class="tel-ecran">
+              <div class="tel-haut"><small>Mercredi 14/10, 12:40</small><h4>Rapport de ventes</h4></div>
+              <div class="tel-corps">
+                <div class="carte-m">
+                  <p class="lieu" style="margin-bottom:4px">Animation soin solaire, Pharmacie P05</p>
+                  <div class="prod"><b>Crème solaire visage</b><span class="q">6</span></div>
+                  <div class="prod"><b>Lait solaire enfant</b><span class="q">4</span><span class="pastille p-att">Date proche</span></div>
+                  <div class="prod"><b>Brume après-soleil</b><span class="q">2</span><span class="pastille p-att">Date proche</span></div>
+                  <div class="prod"><b>Stick lèvres</b><span class="q">2</span></div>
+                  <div class="total-m"><span>Total</span><b style="color:var(--nuit)">14 produits</b></div>
+                </div>
+                <div class="carte-m prime-m"><small>Prime estimée d'octobre</small><strong>53 %</strong><em>de l'objectif du mois, ses chiffres seulement</em><div class="barre"><i></i></div></div>
+              </div>
+              <div class="tel-onglets"><span style="color:var(--discret)">Ma journée</span><span>Planning</span><span style="color:var(--sarcelle-texte)">Rapports</span><span>Profil</span></div>
+            </div></div>
+            <span class="donnees">Données inventées</span>
+          </div>
+          <div class="metier-tete">
+            <p class="appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Téléphone</p>
+            <h3 id="t-animatrice">Animatrice</h3>
+            <p class="besoin">Prouver sa journée en quelques gestes et savoir ce qu'elle gagne.</p>
+          </div>
+          <ul class="metier-points"><li>Check-in avec une photo prise sur place</li><li>Rapport de ventes, produit à date proche signalé</li><li>Prime estimée en cours de mois, ses chiffres seulement</li></ul>
+        </article>
+
+        <article class="metier" id="m-delegue" aria-labelledby="t-delegue">
+          <div class="metier-ecran" aria-hidden="true">
+            <svg class="fond" viewBox="0 0 700 500" preserveAspectRatio="none"><path d="M-20 -20L109 -20 M109 -20L229 -20 M229 -20L389 -20 M389 -20L474 -20 M474 -20L622 -20 M622 -20L720 -20 M-20 103L93 110 M93 110L222 107 M222 107L354 90 M354 90L495 126 M495 126L597 96 M597 96L720 116 M-20 262L125 235 M125 235L279 217 M279 217L402 229 M402 229L479 221 M479 221L609 256 M609 256L720 224 M-20 374L128 364 M128 364L253 348 M253 348L354 355 M354 355L511 366 M511 366L609 374 M609 374L720 368 M-20 520L108 520 M108 520L268 520 M268 520L392 520 M392 520L485 520 M485 520L624 520 M624 520L720 520 M-20 -20L-20 103 M109 -20L93 110 M229 -20L222 107 M389 -20L354 90 M474 -20L495 126 M622 -20L597 96 M720 -20L720 116 M-20 103L-20 262 M93 110L125 235 M222 107L279 217 M354 90L402 229 M495 126L479 221 M597 96L609 256 M720 116L720 224 M-20 262L-20 374 M125 235L128 364 M279 217L253 348 M402 229L354 355 M479 221L511 366 M609 256L609 374 M720 224L720 368 M-20 374L-20 520 M128 364L108 520 M253 348L268 520 M354 355L392 520 M511 366L485 520 M609 374L624 520 M720 368L720 520 M109 -20L222 107 M354 90L479 221 M-20 262L128 364 M479 221L609 374 M253 348L392 520 M622 -20L720 116"/></svg>
+            <div class="tablette"><div class="tab-ecran" style="min-height:360px">
+              <div class="tab-nav"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="tab-liste">
+                <h5>Commande</h5>
+                <p class="lieu" style="font-size:13px;color:var(--discret);margin-top:-6px">Parapharmacie P02, Ariana</p>
+                <div class="choix-m"><span class="on">Avec la visite de 12:00</span><span>Sans visite</span></div>
+                <h5 style="font-size:14px;margin-top:6px">Grossiste</h5>
+                <div class="choix-m"><span class="on">Grossiste G03, Ben Arous</span><span>Grossiste G01, Tunis</span></div>
+              </div>
+              <div class="tab-detail">
+                <h5>Produits commandés</h5>
+                <div class="historique">
+                  <div class="prod"><b>Crème solaire visage</b><span class="q">24</span></div>
+                  <div class="prod"><b>Gel nettoyant doux</b><span class="q">12</span></div>
+                  <div class="prod"><b>Sérum hydratant</b><span class="q">6</span></div>
+                  <div class="total-m"><span>3 produits</span><b style="color:var(--nuit)">42 unités</b></div>
+                </div>
+                <div class="carte-m" style="padding:0;border:0;background:none"><div class="action">Envoyer la commande</div></div>
+              </div>
+            </div></div>
+            <span class="donnees">Données inventées</span>
+          </div>
+          <div class="metier-tete">
+            <p class="appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M18.5 12h.01"/></svg>Tablette</p>
+            <h3 id="t-delegue">Délégué</h3>
+            <p class="besoin">Préparer sa visite, la rendre compte une fois, commander sur place.</p>
+          </div>
+          <ul class="metier-points"><li>Planning et compte rendu de visite</li><li>5 dernières visites et alerte « déjà visitée »</li><li>Commande avec ou sans visite, grossiste au choix</li></ul>
+        </article>
+
+        <article class="metier" id="m-rh" aria-labelledby="t-rh">
+          <div class="metier-ecran" aria-hidden="true">
+            <svg class="fond" viewBox="0 0 700 500" preserveAspectRatio="none"><path d="M-20 -20L109 -20 M109 -20L229 -20 M229 -20L389 -20 M389 -20L474 -20 M474 -20L622 -20 M622 -20L720 -20 M-20 103L93 110 M93 110L222 107 M222 107L354 90 M354 90L495 126 M495 126L597 96 M597 96L720 116 M-20 262L125 235 M125 235L279 217 M279 217L402 229 M402 229L479 221 M479 221L609 256 M609 256L720 224 M-20 374L128 364 M128 364L253 348 M253 348L354 355 M354 355L511 366 M511 366L609 374 M609 374L720 368 M-20 520L108 520 M108 520L268 520 M268 520L392 520 M392 520L485 520 M485 520L624 520 M624 520L720 520 M-20 -20L-20 103 M109 -20L93 110 M229 -20L222 107 M389 -20L354 90 M474 -20L495 126 M622 -20L597 96 M720 -20L720 116 M-20 103L-20 262 M93 110L125 235 M222 107L279 217 M354 90L402 229 M495 126L479 221 M597 96L609 256 M720 116L720 224 M-20 262L-20 374 M125 235L128 364 M279 217L253 348 M402 229L354 355 M479 221L511 366 M609 256L609 374 M720 224L720 368 M-20 374L-20 520 M128 364L108 520 M253 348L268 520 M354 355L392 520 M511 366L485 520 M609 374L624 520 M720 368L720 520 M109 -20L222 107 M354 90L479 221 M-20 262L128 364 M479 221L609 374 M253 348L392 520 M622 -20L720 116"/></svg>
+            <div class="portable"><div class="pc"><div class="pc-barre"><span class="pc-adresse">alpha.zinova.tn</span></div><div class="pc-ecran"><div class="pc-nav"><i></i><i></i><i></i><i></i><i class="on"></i></div><div class="pc-corps">
+              <div class="pc-titre"><h5>Calendrier des absences</h5><span>Octobre 2026</span></div>
+              <div class="pc-bas">
+                <div class="bloc-m">
+                  <div class="calendrier">
+                    <b>Lun</b><b>Mar</b><b>Mer</b><b>Jeu</b><b>Ven</b><b>Sam</b>
+                    <i></i><i></i><i></i><i>1</i><i>2</i><i>3</i>
+                    <i>5</i><i class="c">6</i><i class="c">7</i><i class="c">8</i><i>9</i><i>10</i>
+                    <i>12</i><i>13</i><i>14</i><i class="f">15</i><i>16</i><i>17</i>
+                    <i>19</i><i>20</i><i class="c">21</i><i class="c">22</i><i class="c">23</i><i>24</i>
+                    <i>26</i><i>27</i><i>28</i><i>29</i><i>30</i><i>31</i>
+                  </div>
+                  <div class="legende-m"><span>Congé</span><span>Jour férié</span></div>
+                </div>
+                <div class="bloc-m"><h6>Demandes de congé</h6><ul class="lignes-m"><li><span>VM 02, 21 au 23/10</span><span class="pastille p-ok">Validé</span><span></span></li><li><span>A 03, 02/11</span><span class="pastille p-neutre">Demandé</span><span></span></li></ul>
+                  <h6 style="margin-top:12px">Matériel remis</h6><ul class="lignes-m"><li><span>Tablette, VP 03</span><span class="mt">Bon de remise</span><span></span></li></ul></div>
+              </div>
+            </div></div></div><div class="socle"></div></div>
+            <span class="donnees">Données inventées</span>
+          </div>
+          <div class="metier-tete">
+            <p class="appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+            <h3 id="t-rh">Ressources humaines</h3>
+            <p class="besoin">Tenir les congés, le matériel et les frais sans relances par téléphone.</p>
+          </div>
+          <ul class="metier-points"><li>Congés, soldes acquis chaque mois, calendrier des absences</li><li>Matériel remis, avec bon de remise</li><li>Frais de transport des animatrices</li></ul>
+        </article>
+      </div>
     </div>
 
     <div class="decideur">
@@ -467,34 +974,44 @@ figure{margin:0}
   </div>
 </section>
 
-<section class="section nuit" id="mise-en-place" aria-labelledby="titre-mise">
+<section class="section blanc" id="mise-en-place" aria-labelledby="titre-mise">
   <div class="cadre">
     <div class="tete">
       <h2 id="titre-mise">Comment Zinova se met en place</h2>
       <p>Pas d'installation sur vos ordinateurs : chaque personne ouvre Zinova dans son navigateur ou l'installe sur son téléphone.</p>
     </div>
-    <ol class="etapes">
-      <li><h3>Nous ouvrons l'espace de votre société</h3><p>À votre adresse, par exemple alpha.zinova.tn, avec les modules que vous avez choisis.</p></li>
-      <li><h3>Vos données de départ sont chargées</h3><p>Le référentiel des pharmacies, parapharmacies et médecins est déjà là. Nous ajoutons vos produits, vos objectifs et vos équipes.</p></li>
-      <li><h3>Chacun active son compte</h3><p>Un e-mail, un lien à usage unique, un mot de passe choisi par la personne. La direction ajoute un code à 6 chiffres.</p></li>
-      <li><h3>Le terrain travaille, vous voyez</h3><p>Dès la première journée, les check-in, les visites et les rapports arrivent dans votre tableau de bord.</p></li>
+    <div class="etapes-zone" id="etapes">
+      <svg class="etapes-trace" viewBox="0 0 1000 80" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M17 60 H440 L480 20 H767"/></svg>
+      <ol class="etapes">
+      <li style="--i:0"><h3>Nous ouvrons l'espace de votre société</h3><p>À votre adresse, par exemple alpha.zinova.tn, avec les modules que vous avez choisis.</p></li>
+      <li style="--i:1"><h3>Vos données de départ sont chargées</h3><p>Le référentiel des pharmacies, parapharmacies et médecins est déjà là. Nous ajoutons vos produits, vos objectifs et vos équipes.</p></li>
+      <li style="--i:2"><h3>Chacun active son compte</h3><p>Un e-mail, un lien à usage unique, un mot de passe choisi par la personne. La direction ajoute un code à 6 chiffres.</p></li>
+      <li style="--i:3"><h3>Le terrain travaille, vous voyez</h3><p>Dès la première journée, les check-in, les visites et les rapports arrivent dans votre tableau de bord.</p></li>
     </ol>
+    </div>
   </div>
 </section>
 
-<section class="section blanc" id="securite" aria-labelledby="titre-securite">
-  <div class="cadre">
+<section class="section nuit" id="securite" aria-labelledby="titre-securite">
+  <div class="cadre securite-grille">
     <div class="tete">
       <h2 id="titre-securite">Vos données restent dans votre société.</h2>
       <p>Les fiches de vos pharmacies, vos ventes et vos primes sont des données sensibles. La sécurité de Zinova est construite dans la base de données, pas ajoutée après.</p>
+      <svg class="espaces" viewBox="0 0 340 200" aria-hidden="true">
+        <path class="s" d="M10 30 L110 14 L128 92 L22 110Z M110 14 L222 26 L236 100 L128 92Z M222 26 L330 12 L326 104 L236 100Z M22 110 L128 92 L140 186 L14 192Z M236 100 L326 104 L332 190 L240 182Z"/>
+        <path class="moi" d="M128 92 L236 100 L240 182 L140 186Z"/>
+        <circle class="pt" cx="110" cy="14" r="2.5"/><circle class="pt" cx="222" cy="26" r="2.5"/><circle class="pt" cx="22" cy="110" r="2.5"/><circle class="pt" cx="326" cy="104" r="2.5"/>
+        <circle class="pt-moi" cx="128" cy="92" r="3"/><circle class="pt-moi" cx="236" cy="100" r="3"/><circle class="pt-moi" cx="240" cy="182" r="3"/><circle class="pt-moi" cx="140" cy="186" r="3"/>
+        <text x="186" y="146" text-anchor="middle">alpha.zinova.tn</text>
+      </svg>
     </div>
     <div class="securite">
-      <div><h3>Une société, un espace séparé</h3><p>Double protection, dans l'application et dans la base : une erreur donne une page vide, jamais les données d'une autre société.</p></div>
-      <div><h3>Chacun voit son travail</h3><p>Les droits suivent le métier. Une animatrice ne voit ni le chiffre d'affaires ni la prime de ses collègues.</p></div>
-      <div><h3>Double authentification</h3><p>La direction confirme chaque connexion avec un code à 6 chiffres. Chacun choisit son mot de passe ; personne d'autre ne le connaît.</p></div>
-      <div><h3>Photos effacées après la décision</h3><p>La photo de check-in disparaît dès que la responsable valide ou refuse. La décision, elle, reste tracée.</p></div>
-      <div><h3>Chaque action sensible tracée</h3><p>Un journal d'audit séparé, que personne ne peut modifier ni effacer.</p></div>
-      <div><h3>Aucun traceur</h3><p>Ni publicité ni outil de mesure externe. Français ou anglais, selon le profil de chacun.</p></div>
+      <div><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="6" width="24" height="20" rx="5"/><path d="M16 6v20"/><circle cx="10" cy="16" r="2"/></svg><h3>Une société, un espace séparé</h3><p>Double protection, dans l'application et dans la base : une erreur donne une page vide, jamais les données d'une autre société.</p></div>
+      <div><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="11" r="5"/><path d="M6 27c1.5-5.5 5.5-8 10-8s8.5 2.5 10 8"/></svg><h3>Chacun voit son travail</h3><p>Les droits suivent le métier. Une animatrice ne voit ni le chiffre d'affaires ni la prime de ses collègues.</p></div>
+      <div><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3.5"/><path d="M12.5 13h.01M16 13h.01M19.5 13h.01M12.5 18h.01M16 18h.01M19.5 18h.01"/></svg><h3>Double authentification</h3><p>La direction confirme chaque connexion avec un code à 6 chiffres. Chacun choisit son mot de passe ; personne d'autre ne le connaît.</p></div>
+      <div><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 11.5A2.5 2.5 0 0 1 6.5 9h3l2-3h9l2 3h3A2.5 2.5 0 0 1 28 11.5V24a2.5 2.5 0 0 1-2.5 2.5h-19A2.5 2.5 0 0 1 4 24Z"/><path d="M11 17.5l3.5 3.5 6.5-7"/></svg><h3>Photos effacées après la décision</h3><p>La photo de check-in disparaît dès que la responsable valide ou refuse. La décision, elle, reste tracée.</p></div>
+      <div><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 4h12l5 5v19H8Z"/><path d="M20 4v5h5M12 15h9M12 19.5h9M12 24h5"/></svg><h3>Chaque action sensible tracée</h3><p>Un journal d'audit séparé, que personne ne peut modifier ni effacer.</p></div>
+      <div><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="4.5"/><path d="M8.2 23.8L23.8 8.2"/></svg><h3>Aucun traceur</h3><p>Ni publicité ni outil de mesure externe. Français ou anglais, selon le profil de chacun.</p></div>
     </div>
   </div>
 </section>
@@ -513,7 +1030,7 @@ figure{margin:0}
       </ul>
       <p class="direct">Ou écrivez-nous : <a href="mailto:contact@zinova.tn" id="adresse">contact@zinova.tn</a><button class="lien-copie" type="button" id="copier">Copier l'adresse</button><span class="copie-etat" id="copie-etat" role="status"></span></p>
     </div>
-    <form class="formulaire" id="formulaire" novalidate aria-label="Demande de démonstration">
+    <form class="formulaire signal" id="formulaire" novalidate aria-label="Demande de démonstration">
       <div class="champ"><label for="f-nom">Nom et prénom</label><input id="f-nom" name="nom" autocomplete="name" required aria-describedby="e-nom"><span class="err" id="e-nom"></span></div>
       <div class="champ"><label for="f-societe">Société</label><input id="f-societe" name="societe" autocomplete="organization" required aria-describedby="e-societe"><span class="err" id="e-societe"></span></div>
       <div class="champ"><label for="f-fonction">Fonction</label><select id="f-fonction" name="fonction" required aria-describedby="e-fonction"><option value="">Choisir</option><option>Direction générale</option><option>Direction commerciale ou marketing</option><option>Responsable des animatrices</option><option>Responsable des délégués</option><option>Ressources humaines</option><option>Autre</option></select><span class="err" id="e-fonction"></span></div>
@@ -539,6 +1056,98 @@ figure{margin:0}
 </footer>
 <script>
 (function(){
+  var racine=document.documentElement;
+  var mouvement=window.matchMedia?matchMedia('(prefers-reduced-motion: no-preference)'):{matches:false};
+  function borne(v,a,b){return v<a?a:v>b?b:v;}
+  function hhmm(m){m=Math.round(m);var h=Math.floor(m/60),n=m%60;return (h<10?'0':'')+h+':'+(n<10?'0':'')+n;}
+  function interpole(x,pts){for(var i=1;i<pts.length;i++){if(x<=pts[i][0]){var a=pts[i-1],b=pts[i];return a[1]+(b[1]-a[1])*((x-a[0])/((b[0]-a[0])||1));}}return pts[pts.length-1][1];}
+
+  /* En-tête : avancée de la page et section courante */
+  var entete=document.getElementById('entete');
+  var liens=[].slice.call(document.querySelectorAll('.nav a'));
+  function majEntete(){
+    var h=document.documentElement.scrollHeight-innerHeight;
+    entete.style.setProperty('--avance',h>0?(scrollY/h).toFixed(4):0);
+    var courant=null;
+    liens.forEach(function(a){var s=document.querySelector(a.getAttribute('href'));if(s&&s.getBoundingClientRect().top<innerHeight*.4)courant=a;});
+    liens.forEach(function(a){if(a===courant)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');});
+  }
+
+  /* Héros : l'horloge suit la ligne de tournée */
+  var horlogeHeros=document.getElementById('horloge-heros');
+  if(racine.classList.contains('anim')&&horlogeHeros){
+    var t0=performance.now(), etapesH=[[0,525],[.4,532],[1.38,630],[2.21,760],[3.13,910],[4.4,1080]];
+    (function tic(t){var s=(t-t0)/1000;horlogeHeros.textContent=hhmm(interpole(s,etapesH));if(s<4.5)requestAnimationFrame(tic);})(t0);
+  }
+
+  /* La journée qui défile */
+  var jr=document.getElementById('journee');
+  var chapitres=[].slice.call(jr.querySelectorAll('.jr-ch'));
+  var heureJr=document.getElementById('jr-heure'), evtJr=document.getElementById('jr-evenement');
+  var crans=[].slice.call(jr.querySelectorAll('.cran')), heures=[].slice.call(jr.querySelectorAll('[data-heure]'));
+  var carte=document.getElementById('carte-checkin');
+  var evenements=[[532,'08:52','Check-in en pharmacie'],[630,'10:30','Visite chez le Dr M01'],[760,'12:40','Rapport de ventes'],[910,'15:10','Commande au grossiste'],[1080,'18:00','La direction voit la journée']];
+  var grand=window.matchMedia?matchMedia('(min-width: 900px) and (min-height: 600px)'):{matches:false};
+  var dernier=-1;
+  function majJournee(){
+    if(!jr.classList.contains('defile'))return;
+    var r=jr.getBoundingClientRect(), haut=parseFloat(getComputedStyle(racine).getPropertyValue('--entete'))||72;
+    var course=r.height-(innerHeight-haut);
+    var p=borne((haut-r.top)/course,0,1);
+    var m=interpole(p,[[0,525],[.05,525],[.30,629],[.36,630],[.61,959],[.67,960],[.9,1080],[1,1080]]);
+    var mm=Math.floor(m); if(mm===dernier)return; dernier=mm;
+    heureJr.textContent=hhmm(mm);
+    var actif=mm<630?0:mm<960?1:2;
+    chapitres.forEach(function(c,i){c.classList.toggle('actif',i===actif);c.classList.toggle('passe',i<actif);});
+    jr.style.setProperty('--jour',((mm-525)/555).toFixed(4));
+    crans.forEach(function(c,i){c.classList.toggle('passe',mm>=evenements[i][0]);});
+    var e=null; evenements.forEach(function(v){if(mm>=v[0])e=v;});
+    evtJr.innerHTML=e?'<b>'+e[1]+'</b>'+e[2]:'<b>08:45</b>Check-in ouvert de 08:45 à 10:00';
+    heures[0].textContent=hhmm(Math.min(mm,629)); heures[1].textContent=hhmm(Math.max(mm,960));
+    carte.classList.toggle('fait',mm>=532);
+  }
+  function modeJournee(){
+    var oui=grand.matches&&mouvement.matches;
+    jr.classList.toggle('defile',oui);
+    if(!oui){chapitres.forEach(function(c){c.classList.remove('actif','passe');});carte.classList.remove('fait');heures[0].textContent='08:50';heures[1].textContent='18:00';}
+    dernier=-1; majJournee();
+  }
+  [grand,mouvement].forEach(function(mq){if(mq.addEventListener)mq.addEventListener('change',modeJournee);});
+  modeJournee();
+
+  var attente=false;
+  function auDefilement(){if(attente)return;attente=true;requestAnimationFrame(function(){attente=false;majEntete();majJournee();});}
+  addEventListener('scroll',auDefilement,{passive:true});
+  addEventListener('resize',function(){dernier=-1;auDefilement();});
+  majEntete();
+
+  /* Aujourd'hui / Avec Zinova */
+  var bascule=document.getElementById('bascule'), registre=document.getElementById('registre');
+  bascule.hidden=false;
+  bascule.addEventListener('change',function(e){var v=e.target.value;bascule.setAttribute('data-vue',v);registre.setAttribute('data-vue',v);});
+
+  /* Un écran par métier : onglets */
+  var liste=document.querySelector('.onglets'), onglets=[].slice.call(liste.querySelectorAll('[role="tab"]'));
+  liste.hidden=false;
+  function choisir(o,focus){
+    onglets.forEach(function(x){var oui=x===o,p=document.getElementById(x.getAttribute('aria-controls'));x.setAttribute('aria-selected',oui?'true':'false');x.tabIndex=oui?0:-1;p.hidden=!oui;if(oui){p.classList.remove('entre');void p.offsetWidth;p.classList.add('entre');}});
+    if(focus)o.focus();
+  }
+  onglets.forEach(function(o,i){
+    var p=document.getElementById(o.getAttribute('aria-controls'));p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',o.id);p.tabIndex=0;
+    o.addEventListener('click',function(){choisir(o,false);});
+    o.addEventListener('keydown',function(e){var n=null;if(e.key==='ArrowRight')n=onglets[(i+1)%onglets.length];else if(e.key==='ArrowLeft')n=onglets[(i-1+onglets.length)%onglets.length];else if(e.key==='Home')n=onglets[0];else if(e.key==='End')n=onglets[onglets.length-1];if(n){e.preventDefault();choisir(n,true);}});
+  });
+  choisir(onglets[0],false); document.getElementById('m-directeur').classList.remove('entre');
+
+  /* Mise en place : la tournée se trace à l'arrivée */
+  var etapes=document.getElementById('etapes');
+  if('IntersectionObserver' in window&&racine.classList.contains('anim')){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){etapes.classList.add('vu');io.disconnect();}});},{threshold:.3});
+    io.observe(etapes);
+  } else etapes.classList.add('vu');
+
+  /* Contact */
   var bouton=document.getElementById('copier'), etat=document.getElementById('copie-etat');
   bouton.addEventListener('click',function(){
     var texte=document.getElementById('adresse').textContent;
