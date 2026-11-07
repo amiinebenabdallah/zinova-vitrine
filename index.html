@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zinova : du terrain à la décision, sans papier</title>
-<meta name="description" content="Zinova, la suite de gestion de la force de vente terrain pour la distribution parapharmaceutique en Tunisie : animatrices, délégués, commandes, congés et décisions.">
+<title>Zinova, le terrain le jour même</title>
+<meta name="description" content="Zinova, le logiciel des laboratoires et distributeurs de parapharmacie en Tunisie pour leurs animatrices et leurs délégués : planning, check-in, visites, commandes, primes, rentabilité.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1E33'/%3E%3Ctext x='16' y='23' font-family='Arial' font-weight='700' font-size='20' fill='%23fff' text-anchor='middle'%3Ez%3C/text%3E%3Ccircle cx='25' cy='8' r='3.5' fill='%23EF9F3A'/%3E%3C/svg%3E">
 <style>
@@ -13,483 +13,538 @@
 @font-face{font-family:"Manrope";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/manrope-latin-500-normal.woff2") format("woff2")}
 @font-face{font-family:"Manrope";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/manrope-latin-600-normal.woff2") format("woff2")}
 @font-face{font-family:"Manrope";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/manrope-latin-700-normal.woff2") format("woff2")}
-</style>
-<style>
-/* Mise en page : une bande de nuit (identité, journée terrain animée), puis des bandes claires qui alternent, chaque section une idée. */
 :root{
-  --nuit:#0F1E33; --nuit-2:#17294A; --lagon:#0B7F8C; --lagon-clair:#5CC4C9; --soleil:#EF9F3A; --soleil-fonce:#B86B12;
-  --fond:#F4F6F3; --surface:#FFFFFF; --texte:#0F1E33; --discret:#4A5568; --trait:#DCE3E2; --sur-nuit:#E8EFF0; --sur-nuit-2:#A9C1C6;
-  --ok:#1D7A4E; --ok-fond:#E3F2EA; --bientot:#8A5A0C; --bientot-fond:#FDF0DC; --futur:#3E4C8F; --futur-fond:#E8EBF8;
-  --affiche:"Sora", "Segoe UI", system-ui, sans-serif; --corps:"Manrope", "Segoe UI", system-ui, sans-serif;
+  --nuit:#0F1F33; --nuit-actif:#1C3048; --nuit-texte:#C9D5DD; --sarcelle:#028090; --sarcelle-texte:#015F6B; --soleil:#F2A541; --lagon:#2BB3BF;
+  --brume:#F6F8F7; --surface:#FFFFFF; --discret:#4A5868; --trait:#DCE3E8;
+  --ok-fond:#E0F0EE; --ok:#015F6B; --att-fond:#FDEFD9; --att:#8A5300; --neutre-fond:#E4E8EE; --err-fond:#F9E1DE; --err:#8F2A1C;
+  --titre:"Sora",system-ui,sans-serif; --texte:"Manrope",system-ui,sans-serif;
   color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --fond:#0C1626; --surface:#132238; --texte:#E8EFF0; --discret:#A9B8C4; --trait:#24384F;
-  --ok:#7FD3A6; --ok-fond:#123326; --bientot:#F2C27A; --bientot-fond:#3A2A10; --futur:#AEB8F2; --futur-fond:#1E2550; --lagon:#2AA9B5; color-scheme:dark;}}
-:root[data-theme="dark"]{
-  --fond:#0C1626; --surface:#132238; --texte:#E8EFF0; --discret:#A9B8C4; --trait:#24384F;
-  --ok:#7FD3A6; --ok-fond:#123326; --bientot:#F2C27A; --bientot-fond:#3A2A10; --futur:#AEB8F2; --futur-fond:#1E2550; --lagon:#2AA9B5; color-scheme:dark;}
 *{box-sizing:border-box}
-body{margin:0;background:var(--fond);color:var(--texte);font-family:var(--corps);font-size:16px;line-height:1.6}
-h1,h2,h3{font-family:var(--affiche);text-wrap:balance;margin:0}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--brume);color:var(--nuit);font:500 16px/1.6 var(--texte);overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--titre);margin:0;text-wrap:balance}
 p{margin:0}
-a{color:inherit}
-.bande{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.cadre{max-width:1180px;margin:0 auto}
-.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lagon)}
-.nuit .eyebrow{color:var(--soleil)}
-.section{padding-block:88px;display:flex;flex-direction:column;gap:40px}
-.entete{display:flex;flex-direction:column;gap:12px;max-width:720px}
-.entete h2{font-size:clamp(28px,4vw,42px);line-height:1.15;font-weight:700}
-.entete p{color:var(--discret);font-size:17px}
-:focus-visible{outline:3px solid var(--soleil);outline-offset:3px;border-radius:4px}
+a{color:var(--sarcelle-texte)}
+:focus-visible{outline:3px solid var(--sarcelle);outline-offset:3px;border-radius:6px}
+.cadre{max-width:1200px;margin:0 auto;padding:0 40px}
+.pastille{display:inline-block;font:700 12px/1 var(--texte);padding:6px 10px;border-radius:999px;white-space:nowrap}
+.p-ok{background:var(--ok-fond);color:var(--ok)}
+.p-att{background:var(--att-fond);color:var(--att)}
+.p-neutre{background:var(--neutre-fond);color:var(--nuit)}
+.p-err{background:var(--err-fond);color:var(--err)}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:50px;padding:0 24px;border-radius:12px;font:700 15.5px var(--texte);text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn-principal{background:var(--sarcelle);color:#fff}
+.btn-principal:hover{background:#016D7B}
+.btn-second{background:var(--surface);color:var(--nuit);border-color:var(--trait)}
+.btn-second:hover{border-color:var(--nuit)}
+/* La pastille découpée : un seul élément par écran, là où il faut agir */
+.signal{position:relative}
+.signal::before{content:"";position:absolute;top:-13px;right:-13px;width:36px;height:36px;border-radius:50%;background:var(--fond-signal,var(--brume))}
+.signal::after{content:"";position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:var(--soleil)}
 
-/* Navigation */
-.nuit{background:var(--nuit);color:var(--sur-nuit)}
-nav.haut{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px;flex-wrap:wrap}
-.marque{display:flex;align-items:center;gap:10px;font-family:var(--affiche);font-weight:700;font-size:22px;color:#fff;text-decoration:none}
-.logo{width:38px;height:38px;border-radius:10px;background:#fff;color:var(--nuit);display:grid;place-items:center;font-size:22px;position:relative;font-weight:700}
-.logo::after{content:"";position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:var(--soleil)}
-.liens{display:flex;gap:22px;flex-wrap:wrap;font-size:14.5px}
-.liens a{text-decoration:none;color:var(--sur-nuit-2)}
-.liens a:hover{color:#fff}
+.evitement{position:absolute;left:8px;top:-60px;z-index:30;background:var(--nuit);color:#fff;padding:10px 16px;border-radius:8px;font-weight:700}
+.evitement:focus{top:8px}
+.nuit a{color:#fff}
+/* En-tête */
+.entete-site{position:sticky;top:0;z-index:20;background:rgba(246,248,247,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--trait)}
+.entete-site .cadre{display:flex;align-items:center;gap:32px;height:72px}
+.logo{height:32px;width:auto;display:block}
+.nav{display:flex;gap:26px;margin-left:auto}
+.nav a{color:var(--discret);text-decoration:none;font-weight:600;font-size:15px}
+.nav a:hover{color:var(--nuit)}
+.entete-site .actions{display:flex;align-items:center;gap:18px}
+.entete-site .actions a.lien{font-weight:700;font-size:15px;text-decoration:none;color:var(--nuit)}
+.entete-site .btn{height:42px;padding:0 18px;font-size:14.5px}
 
 /* Héros */
-.heros{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:56px;align-items:center;padding-block:56px 96px}
-.heros h1{font-size:clamp(38px,6vw,68px);line-height:1.04;font-weight:700;color:#fff;letter-spacing:-.02em}
-.heros h1 em{font-style:normal;color:var(--soleil)}
-.heros .accroche{font-size:18.5px;color:var(--sur-nuit-2);max-width:540px}
-.heros .gauche{display:flex;flex-direction:column;gap:26px}
-.actions{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:var(--corps)}
-.btn-soleil{background:var(--soleil);color:var(--nuit)}
-.btn-soleil:hover{background:#F5B35C}
-.btn-ligne{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)}
-.btn-ligne:hover{box-shadow:inset 0 0 0 1.5px #fff}
-.faits{display:flex;gap:28px;flex-wrap:wrap;padding-top:8px;border-top:1px solid rgba(255,255,255,.12)}
-.fait{display:flex;flex-direction:column}
-.fait b{font-family:var(--affiche);font-size:26px;color:#fff}
-.fait span{font-size:13px;color:var(--sur-nuit-2)}
+.heros{position:relative;padding:72px 0 40px;overflow:hidden}
+.secteurs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.secteurs path{fill:none;stroke:#DCE3E8;stroke-width:1.2}
+.heros .cadre{position:relative}
+.heros-haut{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:64px;align-items:end}
+.heros h1{font-size:90px;white-space:nowrap;line-height:.98;letter-spacing:-.035em;font-weight:700}
+.heros .chapo{font-size:18px;color:var(--discret);margin-bottom:26px}
+.heros .chapo b{color:var(--nuit);font-weight:700}
+.boutons{display:flex;gap:12px;flex-wrap:wrap}
 
-/* Journée terrain */
-.journee{background:var(--nuit-2);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;position:relative}
-.journee .titre-j{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--sur-nuit-2);padding:2px 4px 6px}
-.journee .titre-j b{color:#fff;font-family:var(--affiche);font-size:15px}
-.etape{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:14px;align-items:center;background:#1E3358;border-radius:16px;padding:13px 16px;color:var(--sur-nuit)}
-.etape .h{font-variant-numeric:tabular-nums;font-size:13px;color:var(--sur-nuit-2)}
-.etape .q{font-size:14.5px;line-height:1.35}
-.etape .q small{display:block;color:var(--sur-nuit-2);font-size:12.5px}
-.pastille{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
-.p-ok{background:#16483A;color:#8EE0B6}
-.p-dp{background:#4A2420;color:#FFB4A6}
-.p-att{background:#4A3410;color:#FFD08A}
-.p-rang{background:#13505A;color:#9FE6EC}
-.etape.active{background:#24406C;box-shadow:inset 3px 0 0 var(--soleil)}
-@media (prefers-reduced-motion:no-preference){
-  .etape{transition:background .5s, box-shadow .5s}
-}
+/* La ligne de tournée */
+.tournee{position:relative;height:350px;margin-top:56px}
+.tournee svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tournee svg path{fill:none;stroke:var(--sarcelle);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.arret{position:absolute;width:0;height:0}
+.arret .point{position:absolute;left:-10px;top:-10px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:4px solid var(--sarcelle)}
+.arret.maintenant .point{left:-15px;top:-15px;width:30px;height:30px;border:none;background:var(--soleil);box-shadow:0 0 0 6px var(--brume),0 0 0 9px var(--soleil)}
+.arret .texte{position:absolute;left:-12px;width:230px;display:flex;flex-direction:column;gap:3px}
+.arret.bas .texte{top:24px}
+.arret.haut .texte{bottom:24px}
+.arret.droite .texte{left:auto;right:-12px;text-align:right;align-items:flex-end}
+.arret time{font:700 13px var(--texte);color:var(--discret);font-variant-numeric:tabular-nums}
+.arret b{font:700 16.5px/1.25 var(--titre)}
+.arret span{font-size:14.5px;color:var(--discret);line-height:1.4}
+.arret .pastille{align-self:flex-start;margin-top:4px}
+.arret.droite .pastille{align-self:flex-end}
+.legende{margin-top:28px;font-size:13px;color:var(--discret)}
 
-/* Applications */
-.apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.app{background:var(--surface);border:1px solid var(--trait);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:12px}
-.app .ecran{font-size:12.5px;font-weight:700;color:var(--lagon);letter-spacing:.06em;text-transform:uppercase}
-.app h3{font-size:21px}
-.app p{color:var(--discret);font-size:15px}
+/* Sections */
+.section{padding:112px 0}
+.blanc{background:var(--surface)}
+.tete{max-width:760px;margin-bottom:56px}
+.tete h2{font-size:48px;line-height:1.08;letter-spacing:-.02em;margin-bottom:18px}
+.tete p{font-size:18px;color:var(--discret)}
 
-/* Rôles */
-.onglets{display:flex;gap:8px;flex-wrap:wrap}
-.onglet{font-family:var(--corps);font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:999px;border:1px solid var(--trait);background:var(--surface);color:var(--texte);cursor:pointer}
-.onglet[aria-selected="true"]{background:var(--nuit);color:#fff;border-color:var(--nuit)}
-:root[data-theme="dark"] .onglet[aria-selected="true"]{background:var(--lagon);border-color:var(--lagon)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .onglet[aria-selected="true"]{background:var(--lagon);border-color:var(--lagon)}}
-.panneau{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:32px;background:var(--surface);border:1px solid var(--trait);border-radius:24px;padding:32px}
-.panneau h3{font-size:26px}
-.panneau .qui{display:flex;flex-direction:column;gap:12px}
-.panneau .qui p{color:var(--discret)}
-.panneau .appareil{font-size:13.5px;font-weight:600;color:var(--lagon)}
-.liste{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
-.liste li{display:flex;gap:10px;font-size:15px;line-height:1.45}
-.liste li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--soleil)}
+/* Problème : le registre avant / avec */
+.registre{border-top:2px solid var(--nuit)}
+.registre-tete,.ligne-r{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1.15fr);gap:40px}
+.registre-tete{padding:14px 0;border-bottom:1px solid var(--trait);font:700 14px var(--texte);color:var(--discret)}
+.registre-tete span:last-child{color:var(--sarcelle-texte)}
+.ligne-r{padding:26px 0;border-bottom:1px solid var(--trait);align-items:start}
+.ligne-r h3{font-size:19px;line-height:1.3}
+.avant{color:var(--discret);font-size:16px}
+.outil{display:inline-block;font:700 12px var(--texte);color:var(--discret);border:1px solid var(--trait);border-radius:999px;padding:3px 9px;margin-top:10px}
+.apres{font-size:16.5px;font-weight:600}
 
-/* Feuille de route */
-.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.colonne{background:var(--surface);border:1px solid var(--trait);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:16px}
-.colonne .tete{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.colonne h3{font-size:19px}
-.etat{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
-.e-ok{background:var(--ok-fond);color:var(--ok)}
-.e-bientot{background:var(--bientot-fond);color:var(--bientot)}
-.e-futur{background:var(--futur-fond);color:var(--futur)}
-.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
-.items li{display:flex;flex-direction:column;padding-bottom:12px;border-bottom:1px dashed var(--trait)}
-.items li:last-child{border-bottom:0;padding-bottom:0}
-.items b{font-size:15px}
-.items span{font-size:14px;color:var(--discret)}
+/* Métiers : scènes réelles */
+.scenes{display:grid;grid-template-columns:330px minmax(0,1fr);gap:56px;align-items:center;margin-bottom:96px}
+.scene figcaption{margin-top:18px;font-size:14.5px;color:var(--discret);max-width:420px}
+.scene figcaption b{color:var(--nuit);display:block;font:700 16px var(--titre);margin-bottom:2px}
+figure{margin:0}
+.telephone{width:300px;border-radius:40px;background:var(--nuit);padding:10px;margin:0 auto}
+.tel-ecran{border-radius:31px;overflow:hidden;background:var(--brume)}
+.tel-haut{background:var(--nuit);color:#fff;padding:22px 18px 18px}
+.tel-haut small{color:var(--nuit-texte);font-size:12px}
+.tel-haut h4{font-size:22px;margin-top:2px}
+.tel-corps{padding:14px;display:flex;flex-direction:column;gap:12px}
+.carte-m{background:var(--surface);border:1px solid var(--trait);border-radius:16px;padding:14px}
+.carte-m .rang{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.carte-m h5{font:700 17px/1.25 var(--titre);margin:0}
+.carte-m .lieu{font-size:13px;color:var(--discret)}
+.carte-m .fenetre{font:700 13px var(--texte);color:var(--sarcelle-texte);margin:10px 0}
+.carte-m .action{height:44px;border-radius:12px;background:var(--sarcelle);color:#fff;font:700 14.5px var(--texte);display:flex;align-items:center;justify-content:center}
+.prime-m small{font-size:12.5px;color:var(--discret)}
+.prime-m strong{display:block;font:700 30px/1.1 var(--titre);margin:2px 0 2px}
+.prime-m em{display:block;font-style:normal;font-size:12.5px;color:var(--discret);margin-bottom:8px}
+.barre{height:8px;border-radius:99px;background:var(--neutre-fond);overflow:hidden}
+.barre i{display:block;height:100%;width:53%;background:var(--sarcelle);border-radius:99px}
+.tel-onglets{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--trait);padding:10px 4px 14px;font:700 11px var(--texte);color:var(--discret);text-align:center}
+.tel-onglets span:first-child{color:var(--sarcelle-texte)}
 
-/* Assistant */
-.assistant{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
-.bulles{display:flex;flex-direction:column;gap:12px;background:var(--nuit-2);border-radius:24px;padding:24px}
-.bulle{max-width:85%;padding:12px 16px;border-radius:16px;font-size:14.5px;line-height:1.45}
-.bulle.moi{align-self:flex-end;background:var(--soleil);color:var(--nuit);border-bottom-right-radius:4px}
-.bulle.z{background:#1E3358;color:var(--sur-nuit);border-bottom-left-radius:4px}
-.bulle.z b{color:#fff}
-.bientot-note{font-size:13px;color:var(--sur-nuit-2);text-align:center}
+.tablette{background:var(--nuit);border-radius:30px;padding:12px;width:100%;max-width:760px}
+.tab-ecran{border-radius:20px;overflow:hidden;background:var(--brume);display:grid;grid-template-columns:52px minmax(0,.9fr) minmax(0,1.3fr);min-height:400px}
+.tab-nav{background:var(--nuit);display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:16px}
+.tab-nav i{width:22px;height:22px;border-radius:7px;background:var(--nuit-actif)}
+.tab-nav i:first-child{background:var(--sarcelle)}
+.tab-liste{padding:16px 14px;border-right:1px solid var(--trait);display:flex;flex-direction:column;gap:10px}
+.tab-liste h5{font:700 17px var(--titre);margin:0 0 4px}
+.visite{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;background:var(--surface);border:1px solid var(--trait);border-radius:12px;padding:10px;font-size:13px;line-height:1.35}
+.visite time{font-weight:700;color:var(--discret)}
+.visite b{display:block;font-size:13.5px}
+.visite span{color:var(--discret)}
+.visite.active{border:2px solid var(--sarcelle);padding:9px}
+.tab-detail{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.tab-detail h5{font:700 19px var(--titre);margin:0}
+.tab-detail .lieu{font-size:13px;color:var(--discret);margin-top:-8px}
+.alerte{background:var(--att-fond);color:var(--att);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;line-height:1.4}
+.historique{background:var(--surface);border:1px solid var(--trait);border-radius:14px;padding:12px 14px}
+.historique h6{font:700 14px var(--titre);margin:0 0 6px}
+.historique ol{list-style:none;margin:0;padding:0}
+.historique li{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:8px;padding:6px 0;border-top:1px solid #EEF2F4;font-size:12.5px;align-items:center}
+.historique li:first-child{border-top:0}
+.historique time{color:var(--discret);font-variant-numeric:tabular-nums}
+.historique .non{color:var(--discret)}
+
+.metiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--nuit)}
+.metier{padding:30px 32px 34px 0;border-bottom:1px solid var(--trait)}
+.metier:not(:nth-child(3n+1)){padding-left:32px;border-left:1px solid var(--trait)}
+.appareil{display:flex;align-items:center;gap:8px;font:700 13px var(--texte);color:var(--sarcelle-texte);margin-bottom:10px}
+.appareil svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.metier h3{font-size:22px;line-height:1.2;margin-bottom:10px}
+.metier .besoin{color:var(--discret);font-size:15.5px;margin-bottom:14px}
+.metier ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.metier li{position:relative;padding-left:20px;font-size:15px;line-height:1.45;font-weight:600}
+.metier li::before{content:"";position:absolute;left:2px;top:8px;width:8px;height:8px;border-radius:50%;border:2px solid var(--sarcelle)}
+.decideur{margin-top:56px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:56px;background:var(--surface);border:1px solid var(--trait);border-radius:24px;padding:44px 48px}
+.decideur h3{font-size:30px;line-height:1.15;letter-spacing:-.01em;margin-bottom:12px}
+.decideur p{color:var(--discret)}
+.decideur dl{margin:0;display:grid;gap:18px}
+.decideur dt{font:700 17px var(--titre)}
+.decideur dd{margin:2px 0 0;color:var(--discret);font-size:15.5px}
+
+/* Mise en place : la tournée sur fond Nuit */
+.nuit{background:var(--nuit);color:#fff}
+.nuit .tete p{color:var(--nuit-texte)}
+.etapes{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:relative;counter-reset:etape}
+.etapes::before{content:"";position:absolute;left:12px;right:calc(25% - 12px);top:15px;height:3px;background:var(--lagon);border-radius:2px}
+.etapes li{position:relative;padding:58px 28px 0 0;counter-increment:etape}
+.etapes li::before{content:counter(etape);position:absolute;left:0;top:0;width:33px;height:33px;border-radius:50%;background:var(--nuit);border:3px solid var(--lagon);display:grid;place-items:center;font:700 14px var(--titre);color:#fff}
+.etapes li:last-child::before{background:var(--soleil);border-color:var(--soleil);color:var(--nuit);box-shadow:0 0 0 6px var(--nuit)}
+.etapes h3{font-size:20px;line-height:1.25;margin-bottom:10px}
+.etapes p{color:var(--nuit-texte);font-size:15.5px}
 
 /* Sécurité */
-.secu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.carte-s{padding:24px;border-top:3px solid var(--lagon);background:var(--surface);border-radius:0 0 16px 16px;display:flex;flex-direction:column;gap:8px}
-.carte-s h3{font-size:17px}
-.carte-s p{color:var(--discret);font-size:14.5px}
+.securite{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 48px}
+.securite div{padding:26px 0;border-top:1px solid var(--trait)}
+.securite h3{font-size:18.5px;line-height:1.3;margin-bottom:8px}
+.securite p{color:var(--discret);font-size:15.5px}
 
 /* Contact */
-.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:40px;align-items:center;padding-block:80px}
-.contact h2{font-size:clamp(28px,4vw,44px);color:#fff}
-.contact p{color:var(--sur-nuit-2)}
-.contact{align-items:start}
-.direct{display:flex;flex-direction:column;gap:6px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:14px;color:var(--sur-nuit-2)}
-.adresse{font-family:var(--affiche);font-size:20px;color:#fff;user-select:all;word-break:break-all}
-.lien-copie{align-self:flex-start;background:none;border:0;padding:0;color:var(--soleil);font:600 14px var(--corps);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-.copie-etat{font-size:13px;color:var(--soleil);min-height:1.2em}
-.formulaire{background:var(--surface);color:var(--texte);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:16px}
-.ligne2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.champ{display:flex;flex-direction:column;gap:6px;border:0;padding:0;margin:0;min-width:0}
-.champ label,.champ legend{font-size:13.5px;font-weight:700}
-.champ legend{margin-bottom:6px}
-.formulaire input:not([type=checkbox]),.formulaire select,.formulaire textarea{font:15px var(--corps);color:var(--texte);background:var(--fond);border:1.5px solid var(--trait);border-radius:12px;padding:11px 13px;width:100%}
-.formulaire input:focus,.formulaire select:focus,.formulaire textarea:focus{outline:none;border-color:var(--lagon);box-shadow:0 0 0 3px rgba(11,127,140,.18)}
-.formulaire [aria-invalid="true"]{border-color:#C2412D}
-.choix{display:flex;flex-wrap:wrap;gap:8px}
-.choix label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;padding:8px 12px;border:1.5px solid var(--trait);border-radius:999px;cursor:pointer}
-.choix label:has(input:checked){border-color:var(--lagon);background:rgba(11,127,140,.1)}
-.choix input,.accord input{accent-color:var(--lagon);width:16px;height:16px}
-.accord{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--discret)}
-.accord input{margin-top:3px;flex:none}
-.err{font-size:12.5px;color:#C2412D;min-height:0}
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:start}
+.contact .tete{margin-bottom:28px}
+.contact ul{margin:0 0 28px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.contact li{padding-left:20px;position:relative;font-weight:600}
+.contact li::before{content:"";position:absolute;left:2px;top:8px;width:8px;height:8px;border-radius:50%;border:2px solid var(--sarcelle)}
+.direct{font-size:15px;color:var(--discret)}
+.direct a{font-weight:700}
+.formulaire{background:var(--surface);border:1px solid var(--trait);border-radius:24px;padding:34px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.formulaire .large{grid-column:1/-1}
+.champ{display:flex;flex-direction:column;gap:7px;min-width:0}
+.champ label{font:700 13px var(--texte);color:var(--discret)}
+.champ input,.champ select{height:48px;border:1px solid var(--trait);border-radius:12px;padding:0 13px;font:500 15px var(--texte);color:var(--nuit);background:var(--surface);width:100%}
+.champ input:focus,.champ select:focus{outline:none;border-color:var(--sarcelle);box-shadow:0 0 0 3px rgba(2,128,144,.16)}
+.formulaire .btn{grid-column:1/-1;justify-self:start}
+.formulaire .accord{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--discret)}
+.formulaire .accord input{margin-top:3px;flex:none;width:18px;height:18px;accent-color:var(--sarcelle)}
+.champ textarea{border:1px solid var(--trait);border-radius:12px;padding:11px 13px;font:500 15px/1.5 var(--texte);color:var(--nuit);background:var(--surface);width:100%;resize:vertical}
+.champ textarea:focus{outline:none;border-color:var(--sarcelle);box-shadow:0 0 0 3px rgba(2,128,144,.16)}
+.champ [aria-invalid="true"]{border-color:var(--err)}
+.err{font-size:12.5px;color:var(--err);font-weight:600}
+.err:empty{display:none}
 .compteur{font-size:12px;color:var(--discret);align-self:flex-end;font-variant-numeric:tabular-nums}
-.envoyer{align-self:flex-start}
-.resultat{background:var(--ok-fond);color:var(--ok);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5}
-@media (max-width:560px){.ligne2{grid-template-columns:minmax(0,1fr)}.formulaire{padding:20px}}
-footer{padding-block:28px;font-size:13.5px;color:var(--sur-nuit-2);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.1)}
+.resultat{grid-column:1/-1;background:var(--att-fond);color:var(--att);border-radius:12px;padding:14px 16px;font-size:14.5px;line-height:1.5;font-weight:600}
+.resultat[hidden]{display:none}
+.lien-copie{background:none;border:0;padding:0;margin-left:6px;color:var(--sarcelle-texte);font:700 15px var(--texte);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.copie-etat{display:block;min-height:1.4em;font-size:13.5px;color:var(--sarcelle-texte);font-weight:600}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
-@media (max-width:920px){
-  .heros,.assistant,.contact,.panneau{grid-template-columns:minmax(0,1fr)}
-  .apps,.route,.secu{grid-template-columns:minmax(0,1fr)}
-  .section{padding-block:64px}
+.pied{background:var(--nuit);color:var(--nuit-texte);padding:48px 0 40px;font-size:14px}
+.pied .cadre{display:grid;grid-template-columns:auto 1fr auto;gap:24px 48px;align-items:center}
+.pied p{max-width:520px}
+.pied a{color:#fff}
+
+@media (max-width:1100px){
+  .heros h1{font-size:72px}
+  .scenes{grid-template-columns:minmax(0,1fr);gap:48px}
 }
-@media (max-width:560px){
-  .liste{grid-template-columns:minmax(0,1fr)}
-  .liens{gap:14px;font-size:13.5px}
-  .etape{grid-template-columns:44px minmax(0,1fr);}
-  .etape .pastille{grid-column:2;justify-self:start}
-  .panneau{padding:22px}
+@media (max-width:980px){
+  .nav{display:none}
+  .entete-site .actions{margin-left:auto}
+  .heros-haut{grid-template-columns:minmax(0,1fr);gap:24px}
+  .tournee{height:auto;margin-top:40px;padding-left:4px}
+  .tournee svg{display:none}
+  .arret{position:relative;width:auto;height:auto;left:auto!important;top:auto!important;padding:0 0 26px 34px}
+  .arret::before{content:"";position:absolute;left:8px;top:16px;bottom:-4px;width:4px;background:var(--sarcelle)}
+  .arret:last-of-type::before{display:none}
+  .arret .point,.arret.maintenant .point{left:0;top:2px}
+  .arret.maintenant .point{left:-1px;top:0;width:22px;height:22px;box-shadow:0 0 0 4px var(--brume),0 0 0 7px var(--soleil)}
+  .arret .texte{position:static;width:auto}
+  .arret.droite .texte{text-align:left;align-items:flex-start}
+  .arret.droite .pastille{align-self:flex-start}
+  .registre-tete{display:none}
+  .ligne-r{grid-template-columns:minmax(0,1fr);gap:10px}
+  .apres::before{content:"Avec Zinova";display:block;font:700 13px var(--texte);color:var(--sarcelle-texte);margin-bottom:2px}
+  .metiers{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .metier,.metier:not(:nth-child(3n+1)){padding:28px 24px 30px 0;border-left:0}
+  .metier:nth-child(2n){padding-left:24px;border-left:1px solid var(--trait)}
+  .decideur,.contact{grid-template-columns:minmax(0,1fr);gap:36px}
+  .etapes{grid-template-columns:minmax(0,1fr) minmax(0,1fr);row-gap:40px}
+  .etapes::before{display:none}
+  .securite{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .pied .cadre{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){
+  body{font-size:15.5px}
+  .cadre{padding:0 16px}
+  .entete-site .cadre{height:64px;gap:12px}
+  .logo{height:26px}
+  .entete-site .actions{gap:12px}
+  .entete-site .btn{height:40px;padding:0 14px;font-size:13.5px}
+  .entete-site .btn .long{display:none}
+  .heros{padding:40px 0 24px}
+  .heros h1{font-size:50px;white-space:normal}
+  .heros .chapo{font-size:16.5px}
+  .boutons .btn{width:100%}
+  .section{padding:72px 0}
+  .tete{margin-bottom:36px}
+  .tete h2{font-size:32px}
+  .tete p{font-size:16.5px}
+  .telephone{width:280px}
+  .tab-ecran{grid-template-columns:minmax(0,1fr);min-height:0}
+  .tab-nav,.tab-liste{display:none}
+  .historique li{grid-template-columns:78px minmax(0,1fr) auto}
+  .metiers{grid-template-columns:minmax(0,1fr)}
+  .metier,.metier:not(:nth-child(3n+1)),.metier:nth-child(2n){padding:26px 0 28px;border-left:0}
+  .decideur{padding:30px 22px}
+  .decideur h3{font-size:24px}
+  .etapes{grid-template-columns:minmax(0,1fr);row-gap:0}
+  .etapes li{padding:0 0 30px 52px}
+  .etapes li::after{content:"";position:absolute;left:15px;top:36px;bottom:4px;width:3px;background:var(--lagon)}
+  .etapes li:last-child::after{display:none}
+  .securite{grid-template-columns:minmax(0,1fr)}
+  .formulaire{grid-template-columns:minmax(0,1fr);padding:22px}
+  .formulaire .large,.formulaire .accord,.resultat{grid-column:auto}
+  .formulaire .btn{width:100%}
 }
 </style>
-
 </head>
 <body>
-<header class="nuit bande">
+<a class="evitement" href="#principal">Aller au contenu</a>
+
+<header class="entete-site">
   <div class="cadre">
-    <nav class="haut" aria-label="Navigation principale">
-      <a class="marque" href="#accueil"><span class="logo" aria-hidden="true">z</span>Zinova</a>
-      <div class="liens">
-        <a href="#applications">Applications</a>
-        <a href="#roles">Par métier</a>
-        <a href="#feuille-de-route">Feuille de route</a>
-        <a href="#securite">Sécurité</a>
-        <a href="#contact">Contact</a>
-      </div>
+    <a href="#accueil" aria-label="Zinova, accueil"><svg xmlns="http://www.w3.org/2000/svg" class="logo" viewBox="0 0 465 120" role="img" aria-label="Zinova"><title>Zinova</title><defs><mask id="zn-gap-1"><rect width="120" height="120" fill="#fff"/><circle cx="100" cy="20" r="16.5" fill="#000"/></mask></defs><g mask="url(#zn-gap-1)"><rect x="10" y="14" width="96" height="96" rx="28" fill="#0F1F33"/><path d="M38 46 H78 L40 82 H80" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></g><circle cx="100" cy="20" r="14" fill="#F2A541"/><path d="M187.70 99.50L143.70 99.50L143.70 88.30L168.70 58.30L167.70 57L143.80 57L143.80 44.70L186.90 44.70L186.90 55.90L161.80 86L162.80 87.20L187.70 87.20L187.70 99.50ZM212.60 99.50L196.60 99.50L196.60 56.50L189.30 56.50L189.30 44.70L212.60 44.70L212.60 99.50ZM202.80 39.30L202.80 39.30Q198.30 39.30 196.15 36.95Q194 34.60 194 31L194 31Q194 27.30 196.15 24.95Q198.30 22.60 202.80 22.60Q207.30 22.60 209.45 24.95Q211.60 27.30 211.60 31L211.60 31Q211.60 34.60 209.45 36.95Q207.30 39.30 202.80 39.30ZM239.90 99.50L223.90 99.50L223.90 44.70L236.60 44.70L236.60 58.50Q237.10 56.20 237.90 54.20L237.90 54.20Q240 48.60 244.40 45.80Q248.80 43 255.10 43L255.10 43L255.80 43Q265.40 43 270.45 49.25Q275.50 55.50 275.50 68.20L275.50 68.20L275.50 99.50L259.50 99.50L259.50 67.30Q259.50 62.90 256.90 60.10Q254.30 57.30 249.90 57.30L249.90 57.30Q245.40 57.30 242.65 60.15Q239.90 63 239.90 67.60L239.90 67.60L239.90 99.50ZM312.30 101.40L312.30 101.40Q305.10 101.40 299.50 99.15Q293.90 96.90 290.05 93Q286.20 89.10 284.20 84.05Q282.20 79 282.20 73.40L282.20 73.40L282.20 71.10Q282.20 65.40 284.25 60.25Q286.30 55.10 290.25 51.20Q294.20 47.30 299.80 45.05Q305.40 42.80 312.30 42.80L312.30 42.80Q319.40 42.80 324.95 45.05Q330.50 47.30 334.40 51.20Q338.30 55.10 340.40 60.25Q342.50 65.40 342.50 71.10L342.50 71.10L342.50 73.40Q342.50 79 340.50 84.05Q338.50 89.10 334.65 93Q330.80 96.90 325.20 99.15Q319.60 101.40 312.30 101.40ZM312.30 87.90L312.30 87.90Q317 87.90 320.10 85.90Q323.20 83.90 324.85 80.30Q326.50 76.70 326.50 72.30L326.50 72.30Q326.50 67.60 324.80 64.05Q323.10 60.50 319.95 58.40Q316.80 56.30 312.30 56.30L312.30 56.30Q307.90 56.30 304.70 58.40Q301.50 60.50 299.85 64.05Q298.20 67.60 298.20 72.30L298.20 72.30Q298.20 76.70 299.80 80.30Q301.40 83.90 304.60 85.90Q307.80 87.90 312.30 87.90ZM386.20 99.50L360.80 99.50L344.40 44.70L360.90 44.70L372.60 86.20L374.90 86.20L385.00 44.70L400.40 44.70L386.20 99.50ZM452.20 99.50L439.50 99.50L439.50 89Q438.80 91.10 437.90 92.80L437.90 92.80Q435.60 96.70 431.65 98.80Q427.70 100.90 422 100.90L422 100.90Q416.10 100.90 411.65 98.80Q407.20 96.70 404.70 92.75Q402.20 88.80 402.20 83.30L402.20 83.30Q402.20 77.30 405.30 73.45Q408.40 69.60 414 67.75Q419.60 65.90 426.90 65.90L426.90 65.90L436.80 65.90L436.80 65.70Q436.80 61.50 434.80 59.40Q432.80 57.30 428.40 57.30L428.40 57.30Q426.20 57.30 422.60 57.40Q419 57.50 415.20 57.70Q411.40 57.90 408.30 58.10L408.30 58.10L408.30 44.60Q410.60 44.40 413.70 44.20Q416.80 44 420.10 43.90Q423.40 43.80 426.30 43.80L426.30 43.80Q434.70 43.80 440.45 46.20Q446.20 48.60 449.20 53.45Q452.20 58.30 452.20 65.90L452.20 65.90L452.20 99.50ZM436.80 79.20L436.80 74.80L426.80 74.80Q422.60 74.80 420.35 76.85Q418.10 78.90 418.10 82.40L418.10 82.40Q418.10 85.70 420.35 87.75Q422.60 89.80 426.80 89.80L426.80 89.80Q429.50 89.80 431.65 88.85Q433.80 87.90 435.20 85.60Q436.60 83.30 436.80 79.20L436.80 79.20Z" fill="#0F1F33"/></svg></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#probleme">Le problème</a>
+      <a href="#metiers">Par métier</a>
+      <a href="#mise-en-place">Mise en place</a>
+      <a href="#securite">Sécurité</a>
     </nav>
-
-    <section class="heros" id="accueil">
-      <div class="gauche">
-        <p class="eyebrow">Distribution parapharmaceutique · Tunisie</p>
-        <h1>Du terrain à la décision, <em>sans papier.</em></h1>
-        <p class="accroche">Zinova réunit animatrices, délégués, superviseurs et direction sur une même plateforme. Chacun voit son travail, la direction voit tout, et chaque chiffre vient du terrain.</p>
-        <div class="actions">
-          <a class="btn btn-soleil" href="#contact">Demander une démonstration</a>
-          <a class="btn btn-ligne" href="#roles">Voir par métier</a>
-        </div>
-        <div class="faits" aria-label="Zinova en bref">
-          <div class="fait"><b>2</b><span>applications</span></div>
-          <div class="fait"><b>13</b><span>profils métier</span></div>
-          <div class="fait"><b>FR · EN</b><span>dans la langue de chacun</span></div>
-          <div class="fait"><b>1</b><span>société = 1 espace isolé</span></div>
-        </div>
-      </div>
-
-      <div class="journee" aria-label="Exemple d'une journée terrain dans Zinova">
-        <div class="titre-j"><b>Mardi, pharmacie du centre</b><span>exemple</span></div>
-        <div class="etape" data-etape>
-          <span class="h">09:12</span>
-          <span class="q">Check-in de l'animatrice<small>photo prise en direct, supprimée après la décision</small></span>
-          <span class="pastille p-ok">Validé</span>
-        </div>
-        <div class="etape" data-etape>
-          <span class="h">12:40</span>
-          <span class="q">Rapport d'animation<small>14 produits vendus, dont 2 à date proche</small></span>
-          <span class="pastille p-dp">DP 01/2027</span>
-        </div>
-        <div class="etape" data-etape>
-          <span class="h">14:05</span>
-          <span class="q">Commande et bon de livraison<small>grossiste choisi, photo du bon envoyée</small></span>
-          <span class="pastille p-att">À valider</span>
-        </div>
-        <div class="etape" data-etape>
-          <span class="h">15:30</span>
-          <span class="q">Coordinatrice<small>commande comparée au bon, puis validée</small></span>
-          <span class="pastille p-ok">Validée</span>
-        </div>
-        <div class="etape" data-etape>
-          <span class="h">18:00</span>
-          <span class="q">Ma prime, sur le téléphone<small>objectif du mois à 81 %, prime estimée</small></span>
-          <span class="pastille p-rang">Rang #3</span>
-        </div>
-      </div>
-    </section>
+    <div class="actions">
+      <a class="btn btn-principal" href="#contact">Demander<span class="long">&nbsp;une démonstration</span></a>
+    </div>
   </div>
 </header>
 
-<main>
-  <div class="bande" id="applications">
-    <section class="cadre section">
-      <div class="entete">
-        <p class="eyebrow">Une plateforme, deux applications</p>
-        <h2>Le bon écran pour chaque personne</h2>
-        <p>Chaque société a son espace, à son adresse, avec ses modules et sa licence. Personne ne voit les données d'une autre société.</p>
+<main id="principal">
+<section class="heros" id="accueil" aria-labelledby="titre-heros">
+  <svg class="secteurs" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path d="M820 0 L880 120 L1040 96 L1090 0 M880 120 L850 290 L1010 330 L1040 96 L1210 160 L1270 0 M1210 160 L1180 320 L1010 330 M1180 320 L1360 290 L1400 120 L1440 130 M1360 290 L1440 330 M1400 120 L1270 0"/>
+  </svg>
+  <div class="cadre">
+    <div class="heros-haut">
+      <h1 id="titre-heros">Le terrain,<br>le jour&nbsp;même.</h1>
+      <div>
+        <p class="chapo">Zinova est le logiciel des <b>laboratoires et distributeurs de parapharmacie</b> pour leurs animatrices et leurs délégués. Chaque animation et chaque visite est prouvée sur place, chaque prime est calculée, et la direction voit tout le jour même.</p>
+        <div class="boutons">
+          <a class="btn btn-principal" href="#contact">Demander une démonstration</a>
+          <a class="btn btn-second" href="#metiers">Voir ce que fait chaque métier</a>
+        </div>
       </div>
-      <div class="apps">
-        <article class="app">
-          <span class="ecran">Ordinateur</span>
-          <h3>Back-office</h3>
-          <p>Pour la direction, les responsables, la RH, les assistantes et la coordination : tableaux de bord, planning, validations, rentabilité, primes, commandes et matériel.</p>
-        </article>
-        <article class="app">
-          <span class="ecran">Smartphone et tablette</span>
-          <h3>Application terrain</h3>
-          <p>Installable sur le téléphone de l'animatrice et sur la tablette des délégués. Elle garde les brouillons sans réseau et les envoie dès que la connexion revient.</p>
-        </article>
-      </div>
-    </section>
-  </div>
+    </div>
 
-  <div class="bande" id="roles" style="background:var(--surface)">
-    <section class="cadre section">
-      <div class="entete">
-        <p class="eyebrow">Par métier</p>
-        <h2>Ce que chacun fait avec Zinova</h2>
-        <p>Chaque profil a son menu, son guide d'utilisation et ses droits. Choisissez un métier.</p>
-      </div>
-      <div class="onglets" role="tablist" aria-label="Métiers">
-        <button class="onglet" role="tab" id="t-direction" aria-controls="p-role" aria-selected="true" data-role="direction">Direction</button>
-        <button class="onglet" role="tab" id="t-animation" aria-controls="p-role" aria-selected="false" data-role="animation">Responsable animatrices</button>
-        <button class="onglet" role="tab" id="t-animatrice" aria-controls="p-role" aria-selected="false" data-role="animatrice">Animatrice</button>
-        <button class="onglet" role="tab" id="t-delegues" aria-controls="p-role" aria-selected="false" data-role="delegues">Délégués et superviseurs</button>
-        <button class="onglet" role="tab" id="t-managers" aria-controls="p-role" aria-selected="false" data-role="managers">Managers</button>
-        <button class="onglet" role="tab" id="t-coordination" aria-controls="p-role" aria-selected="false" data-role="coordination">Coordination et marketing</button>
-        <button class="onglet" role="tab" id="t-rh" aria-controls="p-role" aria-selected="false" data-role="rh">RH et assistantes</button>
-      </div>
-      <div class="panneau" id="p-role" role="tabpanel" aria-labelledby="t-direction">
-        <div class="qui">
-          <span class="appareil" id="r-appareil">Ordinateur</span>
-          <h3 id="r-titre">Direction</h3>
-          <p id="r-texte">Elle voit l'activité de toute la société et fixe les règles du jeu : objectifs, taux de prime, classes de pharmacies.</p>
-        </div>
-        <ul class="liste" id="r-liste">
-          <li>Tableau de bord du mois : visites, animations, commandes, alertes</li>
-          <li>Rentabilité de chaque animation, frais compris</li>
-          <li>Classes A, B, C des pharmacies selon leur chiffre d'affaires</li>
-          <li>Produits vendus à date proche, par pharmacie</li>
-          <li>Objectifs mensuels et taux de prime</li>
-          <li>Primes calculées à partir des rapports validés, export Excel</li>
-        </ul>
-      </div>
-    </section>
+    <div class="tournee" role="list" aria-label="Exemple d'une journée dans Zinova">
+      <svg viewBox="0 0 1000 350" preserveAspectRatio="none" aria-hidden="true"><path d="M12 205 H268 L352 121 H692 L776 205 H988"/></svg>
+      <div class="arret bas" role="listitem" style="left:1.2%;top:205px"><i class="point"></i><div class="texte"><time>08:52</time><b>Check-in en pharmacie</b><span>Photo prise sur place, Pharmacie P05, Ariana</span><span class="pastille p-ok">Validé</span></div></div>
+      <div class="arret bas" role="listitem" style="left:26.8%;top:205px"><i class="point"></i><div class="texte"><time>10:30</time><b>Visite chez le Dr M01</b><span>Compte rendu saisi sur la tablette</span><span class="pastille p-ok">Réalisée</span></div></div>
+      <div class="arret haut maintenant" role="listitem" style="left:45%;top:121px"><i class="point"></i><div class="texte"><time>12:40</time><b>Rapport de ventes</b><span>14 produits vendus, dont 2 à date proche</span><span class="pastille p-att">À valider</span></div></div>
+      <div class="arret haut" role="listitem" style="left:69.2%;top:121px"><i class="point"></i><div class="texte"><time>15:10</time><b>Commande au grossiste</b><span>Parapharmacie P02, grossiste choisi</span><span class="pastille p-neutre">Envoyée</span></div></div>
+      <div class="arret bas droite" role="listitem" style="left:98.8%;top:205px"><i class="point"></i><div class="texte"><time>18:00</time><b>La direction voit la journée</b><span>Visites, animations, commandes et primes</span></div></div>
+    </div>
+    <p class="legende">Exemple d'une journée dans Zinova. Le point jaune marque ce qui attend une décision. Lieux et personnes inventés.</p>
   </div>
+</section>
 
-  <div class="bande" id="feuille-de-route">
-    <section class="cadre section">
-      <div class="entete">
-        <p class="eyebrow">Feuille de route</p>
-        <h2>Ce qui est en service, ce qui vient</h2>
-        <p>Zinova avance vite : de nouvelles fonctions arrivent chaque semaine, décidées avec les équipes qui l'utilisent.</p>
-      </div>
-      <div class="route">
-        <div class="colonne">
-          <div class="tete"><h3>Le terrain</h3><span class="etat e-ok">En service</span></div>
-          <ul class="items">
-            <li><b>Animations et check-in</b><span>planning du lundi au samedi, photo en direct, rapports et ventes</span></li>
-            <li><b>Visites des délégués</b><span>portefeuilles, alerte « déjà visitée », 5 dernières visites d'une cible</span></li>
-            <li><b>Superviseurs et équipes</b><span>groupes de délégués, inactivités validées au plus près</span></li>
-            <li><b>Circuit des commandes</b><span>grossiste, photo du bon de livraison, validation par la coordinatrice</span></li>
-            <li><b>Primes et rang</b><span>prime estimée en cours de mois, mois précédents, rang de l'animatrice</span></li>
-            <li><b>Pilotage</b><span>rentabilité, classes A, B, C, produits à date proche, statistiques</span></li>
-          </ul>
-        </div>
-        <div class="colonne">
-          <div class="tete"><h3>L'équipe et l'organisation</h3><span class="etat e-ok">En service</span></div>
-          <ul class="items">
-            <li><b>Ressources humaines</b><span>fiches employés, matériel et bon de remise, frais de transport</span></li>
-            <li><b>Packs et guide</b><span>packs de produits, aide d'utilisation par rôle</span></li>
-            <li><b>Messagerie et groupes</b><span>discussions entre collègues, groupes, bouton « Contacter » depuis une alerte</span></li>
-            <li><b>Tâches et coursiers</b><span>demandes de course, affectation, planning du jour du coursier</span></li>
-            <li><b>Congés et soldes</b><span>demande depuis tous les écrans, solde acquis chaque mois, certificat</span></li>
-            <li><b>Planification par quinzaine</b><span>deux pharmacies en alternance, une semaine sur deux</span></li>
-            <li><b>Notifications sonores</b><span>un bip et une carte quand l'onglet est en arrière-plan</span></li>
-            <li><b>Kilométrage GPS</b><span>kilomètres réels des voitures comparés aux visites</span></li>
-            <li><b>Pack promotionnel</b><span>testeurs, cadeaux, présentoir et animation incluse</span></li>
-          </ul>
-        </div>
-        <div class="colonne">
-          <div class="tete"><h3>Demain</h3><span class="etat e-futur">À l'étude</span></div>
-          <ul class="items">
-            <li><b>Assistant Zinova</b><span>poser une question en français et obtenir la réponse depuis vos données</span></li>
-            <li><b>Gestion de stock</b><span>stocks, entrées, sorties et alertes de rupture</span></li>
-            <li><b>Facturation</b><span>factures et suivi des règlements</span></li>
-            <li><b>Recouvrement</b><span>échéances clients, relances et suivi des encaissements</span></li>
-            <li><b>Comptabilité</b><span>écritures et liens avec votre cabinet comptable</span></li>
-            <li><b>Notifications sur le téléphone</b><span>même quand l'application est fermée</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <div class="bande nuit">
-    <section class="cadre section assistant">
-      <div class="entete">
-        <p class="eyebrow">Bientôt</p>
-        <h2 style="color:#fff">L'Assistant Zinova</h2>
-        <p style="color:var(--sur-nuit-2)">Une question, une réponse, sans chercher dans les tableaux. L'assistant ne lit que ce que votre rôle vous permet de voir.</p>
-      </div>
-      <div class="bulles" aria-label="Exemple de conversation avec l'Assistant Zinova, fonction à venir">
-        <div class="bulle moi">Quelles pharmacies de Sfax n'ont pas été visitées ce mois-ci ?</div>
-        <div class="bulle z"><b>7 pharmacies</b> de classe A ou B, dont 3 sans visite depuis plus de 60 jours. Je prépare la liste pour la planification de la semaine prochaine ?</div>
-        <div class="bulle moi">Oui, par délégué.</div>
-        <p class="bientot-note">Exemple de conversation, fonction à l'étude</p>
-      </div>
-    </section>
-  </div>
-
-  <div class="bande" id="securite">
-    <section class="cadre section">
-      <div class="entete">
-        <p class="eyebrow">Sécurité et confiance</p>
-        <h2>Vos données restent les vôtres</h2>
-        <p>La sécurité est construite dans chaque écran et dans la base de données, pas ajoutée après coup.</p>
-      </div>
-      <div class="secu">
-        <div class="carte-s"><h3>Une société, un espace isolé</h3><p>Double protection, dans l'application et dans la base : une erreur donne un résultat vide, jamais les données d'une autre société.</p></div>
-        <div class="carte-s"><h3>Chacun voit son travail</h3><p>Les droits suivent le rôle. Une animatrice ne voit ni chiffre d'affaires ni les résultats de ses collègues.</p></div>
-        <div class="carte-s"><h3>Double authentification</h3><p>Code à usage unique pour la direction. Seul Zinova crée les comptes, chacun choisit son mot de passe.</p></div>
-        <div class="carte-s"><h3>Photos supprimées</h3><p>La photo de check-in est effacée dès la décision du responsable. La trace de la décision est conservée.</p></div>
-        <div class="carte-s"><h3>Chaque action tracée</h3><p>Les actions sensibles sont enregistrées dans un journal d'audit séparé, qui ne peut être ni modifié ni effacé.</p></div>
-        <div class="carte-s"><h3>Aucun traceur</h3><p>Ni publicité ni outil de mesure externe. Les polices et les fichiers sont servis par nos serveurs.</p></div>
-      </div>
-    </section>
-  </div>
-
-  <div class="bande nuit" id="contact">
-    <section class="cadre contact">
-      <div class="entete">
-        <p class="eyebrow">Contact</p>
-        <h2>Voyons Zinova avec vos équipes</h2>
-        <p>Une démonstration de 45 minutes, sur vos métiers : animation, délégués, commandes, primes. Nous répondons sous 48 heures ouvrées.</p>
-        <div class="direct">
-          <span>Ou écrivez-nous directement</span>
-          <span class="adresse" id="adresse">contact@zinova.tn</span>
-          <button class="lien-copie" type="button" id="copier">Copier l'adresse</button>
-          <span class="copie-etat" id="copie-etat" role="status"></span>
-        </div>
-      </div>
-      <form class="formulaire" id="formulaire" novalidate>
-        <div class="ligne2">
-          <div class="champ"><label for="f-nom">Nom et prénom</label><input id="f-nom" name="nom" autocomplete="name" required><span class="err" id="e-nom"></span></div>
-          <div class="champ"><label for="f-societe">Société</label><input id="f-societe" name="societe" autocomplete="organization" required><span class="err" id="e-societe"></span></div>
-        </div>
-        <div class="ligne2">
-          <div class="champ"><label for="f-fonction">Fonction</label>
-            <select id="f-fonction" name="fonction" required>
-              <option value="">Choisir</option><option>Direction générale</option><option>Direction commerciale ou marketing</option><option>Responsable des animatrices</option><option>Responsable des délégués</option><option>Ressources humaines</option><option>Autre</option>
-            </select><span class="err" id="e-fonction"></span></div>
-          <div class="champ"><label for="f-effectif">Personnes sur le terrain</label>
-            <select id="f-effectif" name="effectif" required>
-              <option value="">Choisir</option><option>Moins de 10</option><option>10 à 30</option><option>31 à 80</option><option>Plus de 80</option>
-            </select><span class="err" id="e-effectif"></span></div>
-        </div>
-        <div class="ligne2">
-          <div class="champ"><label for="f-email">E-mail professionnel</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required><span class="err" id="e-email"></span></div>
-          <div class="champ"><label for="f-tel">Téléphone</label><input id="f-tel" name="telephone" type="tel" autocomplete="tel" inputmode="tel" placeholder="20 365 147"><span class="err" id="e-tel"></span></div>
-        </div>
-        <fieldset class="champ">
-          <legend>Ce qui vous intéresse</legend>
-          <div class="choix">
-            <label><input type="checkbox" name="interet" value="Animation terrain"> Animation terrain</label>
-            <label><input type="checkbox" name="interet" value="Délégués"> Délégués et visites</label>
-            <label><input type="checkbox" name="interet" value="Commandes"> Commandes</label>
-            <label><input type="checkbox" name="interet" value="RH"> RH et matériel</label>
-            <label><input type="checkbox" name="interet" value="Messagerie"> Messagerie</label>
-            <label><input type="checkbox" name="interet" value="Coursiers"> Tâches et coursiers</label>
-          </div>
-        </fieldset>
-        <div class="champ"><label for="f-message">Votre besoin</label><textarea id="f-message" name="message" rows="4" maxlength="1500" placeholder="Nombre de marques, régions couvertes, outil actuel…"></textarea><span class="compteur" id="c-message">0 / 1500</span></div>
-        <label class="accord"><input type="checkbox" id="f-accord" required> <span>J'accepte que Zinova utilise ces informations pour répondre à ma demande, et seulement pour cela.</span></label>
-        <span class="err" id="e-accord"></span>
-        <button class="btn btn-soleil envoyer" type="submit">Demander une démonstration</button>
-        <div class="resultat" id="resultat" role="status" hidden></div>
-      </form>
-    </section>
-    <div class="cadre">
-      <footer>
-        <span>© 2026 Zinova · Tunisie</span>
-        <span>Édition de logiciels et services informatiques</span>
-      </footer>
+<section class="section blanc" id="probleme" aria-labelledby="titre-probleme">
+  <div class="cadre">
+    <div class="tete">
+      <h2 id="titre-probleme">Aujourd'hui, le terrain se raconte. Il ne se voit pas.</h2>
+      <p>La journée du terrain passe par trois outils qui ne se parlent pas : un fichier Excel, des groupes WhatsApp et du papier. Le directeur commercial apprend ce qui s'est passé des jours plus tard, et doit croire sur parole.</p>
+    </div>
+    <div class="registre">
+      <div class="registre-tete" aria-hidden="true"><span></span><span>Aujourd'hui</span><span>Avec Zinova</span></div>
+      <div class="ligne-r"><div><h3>Le planning des animatrices</h3><span class="outil">Excel</span></div><p class="avant">Le planning circule par fichier. Deux animations se chevauchent et personne ne le voit avant le jour J.</p><p class="apres">Le planning est saisi dans Zinova et une animation qui en chevauche une autre est refusée. L'animatrice voit sa semaine sur son téléphone.</p></div>
+      <div class="ligne-r"><div><h3>La présence en pharmacie</h3><span class="outil">WhatsApp</span></div><p class="avant">Une photo envoyée dans un groupe, à une heure que personne ne peut vérifier.</p><p class="apres">Le check-in se fait avec une photo prise en direct, à l'heure du serveur. La responsable décide, puis la photo est effacée.</p></div>
+      <div class="ligne-r"><div><h3>Les visites des délégués</h3><span class="outil">Papier</span></div><p class="avant">Les comptes rendus arrivent en retard, ressaisis le vendredi, ou pas du tout.</p><p class="apres">Le délégué saisit son compte rendu sur la tablette. Une visite sans compte rendu à minuit compte comme non réalisée.</p></div>
+      <div class="ligne-r"><div><h3>Les primes</h3><span class="outil">À la main</span></div><p class="avant">Calculées en fin de mois sur un tableur, puis discutées une par une.</p><p class="apres">La prime est calculée à partir des rapports validés. Chaque animatrice suit sa prime estimée pendant le mois.</p></div>
+      <div class="ligne-r"><div><h3>Ce que rapporte une animation</h3><span class="outil">Inconnu</span></div><p class="avant">Personne ne sait si une journée en pharmacie a rapporté plus qu'elle n'a coûté.</p><p class="apres">Chaque animation a sa rentabilité, frais de transport compris, et chaque pharmacie sa classe A, B ou C.</p></div>
     </div>
   </div>
+</section>
+
+<section class="section" id="metiers" aria-labelledby="titre-metiers">
+  <div class="cadre">
+    <div class="tete">
+      <h2 id="titre-metiers">Un écran par métier, sur le bon appareil.</h2>
+      <p>L'animatrice travaille sur son téléphone, le délégué sur une tablette, les responsables et la direction sur l'ordinateur. Chacun ne voit que ce qui le concerne.</p>
+    </div>
+
+    <div class="scenes">
+      <figure class="scene">
+        <div class="telephone" aria-hidden="true">
+          <div class="tel-ecran">
+            <div class="tel-haut"><small>Mercredi 14/10, 08:50</small><h4>Ma journée</h4></div>
+            <div class="tel-corps">
+              <div class="carte-m signal" style="--fond-signal:var(--brume)">
+                <div class="rang"><span class="pastille p-ok">Confirmée</span><span style="font:700 13px var(--texte)">09:00 – 17:00</span></div>
+                <h5>Animation soin solaire</h5>
+                <p class="lieu">Pharmacie P05, Ariana</p>
+                <p class="fenetre">Check-in ouvert de 08:45 à 10:00</p>
+                <div class="action">Faire le check-in</div>
+              </div>
+              <div class="carte-m prime-m">
+                <small>Prime estimée d'octobre</small>
+                <strong>53 %</strong><em>de l'objectif du mois, 8 vendus sur 15</em>
+                <div class="barre"><i></i></div>
+              </div>
+            </div>
+            <div class="tel-onglets"><span>Ma journée</span><span>Planning</span><span>Rapports</span><span>Profil</span></div>
+          </div>
+        </div>
+        <figcaption><b>Le téléphone de l'animatrice</b>Sa journée, son check-in et sa prime, sans rien demander à personne.</figcaption>
+      </figure>
+
+      <figure class="scene">
+        <div class="tablette" aria-hidden="true">
+          <div class="tab-ecran">
+            <div class="tab-nav"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="tab-liste">
+              <h5>Jeudi 15/10</h5>
+              <div class="visite active"><time>09:00</time><div><b>Pharmacie P01</b><span>Tunis</span></div></div>
+              <div class="visite"><time>10:30</time><div><b>Dr M01, dermatologue</b><span>La Marsa</span></div></div>
+              <div class="visite"><time>12:00</time><div><b>Parapharmacie P02</b><span>Ariana</span></div></div>
+              <div class="visite"><time>14:30</time><div><b>Grossiste G03</b><span>Ben Arous</span></div></div>
+            </div>
+            <div class="tab-detail">
+              <h5>Pharmacie P01</h5>
+              <p class="lieu">Visite de 09:00, Tunis</p>
+              <div class="alerte">Déjà visitée le 09/10 par un collègue de l'équipe VP.</div>
+              <div class="historique">
+                <h6>5 dernières visites</h6>
+                <ol>
+                  <li><time>09/10/2026</time><span>VP 03, équipe VP</span><span class="pastille p-ok">Réalisée</span></li>
+                  <li><time>30/09/2026</time><span>VM 07, équipe VM</span><span class="pastille p-ok">Réalisée</span></li>
+                  <li><time>22/09/2026</time><span>VP 03, équipe VP</span><span class="pastille p-ok">Réalisée</span></li>
+                  <li><time>11/09/2026</time><span>VM 02, équipe VM</span><span class="pastille p-err">Non réalisée</span></li>
+                  <li><time>27/08/2026</time><span>VM 07, équipe VM</span><span class="pastille p-ok">Réalisée</span></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption><b>La tablette du délégué</b>Avant d'entrer, il sait qui est passé avant lui et ce qui s'est dit.</figcaption>
+      </figure>
+    </div>
+
+    <div class="metiers">
+      <article class="metier">
+        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+        <h3>Directeur commercial</h3>
+        <p class="besoin">Savoir ce qui s'est vraiment passé cette semaine, sans attendre les fichiers du lundi.</p>
+        <ul><li>Visites réalisées face à l'objectif, ajusté aux heures disponibles</li><li>Animations, check-in en attente et commandes de la semaine</li><li>Rentabilité de chaque animation, frais compris</li></ul>
+      </article>
+      <article class="metier">
+        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+        <h3>Responsable des animatrices</h3>
+        <p class="besoin">Planifier sans conflit et décider vite, sans courir après les photos.</p>
+        <ul><li>Planning du lundi au samedi, chevauchements refusés</li><li>Check-in à valider, du plus ancien au plus récent</li><li>Rapports de ventes et produits à date proche</li></ul>
+      </article>
+      <article class="metier">
+        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+        <h3>Manager des délégués</h3>
+        <p class="besoin">Savoir qui a visité qui, et pourquoi une journée est restée vide.</p>
+        <ul><li>Visites par délégué et par équipe, VP, VM et VMR</li><li>Inactivités validées : congé, formation, réunion</li><li>Portefeuilles, groupes et superviseurs</li></ul>
+      </article>
+      <article class="metier">
+        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Téléphone</p>
+        <h3>Animatrice</h3>
+        <p class="besoin">Prouver sa journée en quelques gestes et savoir ce qu'elle gagne.</p>
+        <ul><li>Check-in avec une photo prise sur place</li><li>Rapport de ventes, produit à date proche signalé</li><li>Prime estimée en cours de mois, ses chiffres seulement</li></ul>
+      </article>
+      <article class="metier">
+        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M18.5 12h.01"/></svg>Tablette</p>
+        <h3>Délégué</h3>
+        <p class="besoin">Préparer sa visite, la rendre compte une fois, commander sur place.</p>
+        <ul><li>Planning et compte rendu de visite</li><li>5 dernières visites et alerte « déjà visitée »</li><li>Commande avec ou sans visite, grossiste au choix</li></ul>
+      </article>
+      <article class="metier">
+        <p class="appareil"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Ordinateur</p>
+        <h3>Ressources humaines</h3>
+        <p class="besoin">Tenir les congés, le matériel et les frais sans relances par téléphone.</p>
+        <ul><li>Congés, soldes acquis chaque mois, calendrier des absences</li><li>Matériel remis, avec bon de remise</li><li>Frais de transport des animatrices</li></ul>
+      </article>
+    </div>
+
+    <div class="decideur">
+      <div>
+        <h3>Pour la direction générale et le financier</h3>
+        <p>Une animation coûte une journée de salaire, un déplacement et des produits. Zinova dit ce qu'elle a rapporté, et calcule ce que chacun a gagné à partir de ce qui a été validé.</p>
+      </div>
+      <dl>
+        <div><dt>Des primes qu'on ne recalcule plus</dt><dd>Calculées à partir des rapports validés, avec le détail par produit et par marque.</dd></div>
+        <div><dt>Des animations comparées</dt><dd>Rentabilité de chaque animation, frais compris ; pharmacies classées A, B ou C.</dd></div>
+        <div><dt>Une licence annuelle, par module</dt><dd>Animation terrain, délégués, ressources humaines. Tarifs sur demande.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="section nuit" id="mise-en-place" aria-labelledby="titre-mise">
+  <div class="cadre">
+    <div class="tete">
+      <h2 id="titre-mise">Comment Zinova se met en place</h2>
+      <p>Pas d'installation sur vos ordinateurs : chaque personne ouvre Zinova dans son navigateur ou l'installe sur son téléphone.</p>
+    </div>
+    <ol class="etapes">
+      <li><h3>Nous ouvrons l'espace de votre société</h3><p>À votre adresse, par exemple alpha.zinova.tn, avec les modules que vous avez choisis.</p></li>
+      <li><h3>Vos données de départ sont chargées</h3><p>Le référentiel des pharmacies, parapharmacies et médecins est déjà là. Nous ajoutons vos produits, vos objectifs et vos équipes.</p></li>
+      <li><h3>Chacun active son compte</h3><p>Un e-mail, un lien à usage unique, un mot de passe choisi par la personne. La direction ajoute un code à 6 chiffres.</p></li>
+      <li><h3>Le terrain travaille, vous voyez</h3><p>Dès la première journée, les check-in, les visites et les rapports arrivent dans votre tableau de bord.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section blanc" id="securite" aria-labelledby="titre-securite">
+  <div class="cadre">
+    <div class="tete">
+      <h2 id="titre-securite">Vos données restent dans votre société.</h2>
+      <p>Les fiches de vos pharmacies, vos ventes et vos primes sont des données sensibles. La sécurité de Zinova est construite dans la base de données, pas ajoutée après.</p>
+    </div>
+    <div class="securite">
+      <div><h3>Une société, un espace séparé</h3><p>Double protection, dans l'application et dans la base : une erreur donne une page vide, jamais les données d'une autre société.</p></div>
+      <div><h3>Chacun voit son travail</h3><p>Les droits suivent le métier. Une animatrice ne voit ni le chiffre d'affaires ni la prime de ses collègues.</p></div>
+      <div><h3>Double authentification</h3><p>La direction confirme chaque connexion avec un code à 6 chiffres. Chacun choisit son mot de passe ; personne d'autre ne le connaît.</p></div>
+      <div><h3>Photos effacées après la décision</h3><p>La photo de check-in disparaît dès que la responsable valide ou refuse. La décision, elle, reste tracée.</p></div>
+      <div><h3>Chaque action sensible tracée</h3><p>Un journal d'audit séparé, que personne ne peut modifier ni effacer.</p></div>
+      <div><h3>Aucun traceur</h3><p>Ni publicité ni outil de mesure externe. Français ou anglais, selon le profil de chacun.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact" aria-labelledby="titre-contact">
+  <div class="cadre contact">
+    <div>
+      <div class="tete">
+        <h2 id="titre-contact">Voyons Zinova sur vos métiers.</h2>
+        <p>Une démonstration de 45 minutes avec vos responsables, sur vos cas : animations, visites, commandes, primes.</p>
+      </div>
+      <ul>
+        <li>Réponse sous 48 heures ouvrées</li>
+        <li>Tarifs sur demande, selon le nombre de personnes sur le terrain et les modules</li>
+        <li>Démonstration sur des données inventées, jamais les vôtres</li>
+      </ul>
+      <p class="direct">Ou écrivez-nous : <a href="mailto:contact@zinova.tn" id="adresse">contact@zinova.tn</a><button class="lien-copie" type="button" id="copier">Copier l'adresse</button><span class="copie-etat" id="copie-etat" role="status"></span></p>
+    </div>
+    <form class="formulaire" id="formulaire" novalidate aria-label="Demande de démonstration">
+      <div class="champ"><label for="f-nom">Nom et prénom</label><input id="f-nom" name="nom" autocomplete="name" required aria-describedby="e-nom"><span class="err" id="e-nom"></span></div>
+      <div class="champ"><label for="f-societe">Société</label><input id="f-societe" name="societe" autocomplete="organization" required aria-describedby="e-societe"><span class="err" id="e-societe"></span></div>
+      <div class="champ"><label for="f-fonction">Fonction</label><select id="f-fonction" name="fonction" required aria-describedby="e-fonction"><option value="">Choisir</option><option>Direction générale</option><option>Direction commerciale ou marketing</option><option>Responsable des animatrices</option><option>Responsable des délégués</option><option>Ressources humaines</option><option>Autre</option></select><span class="err" id="e-fonction"></span></div>
+      <div class="champ"><label for="f-effectif">Personnes sur le terrain</label><select id="f-effectif" name="effectif" required aria-describedby="e-effectif"><option value="">Choisir</option><option>Moins de 10</option><option>10 à 30</option><option>31 à 80</option><option>Plus de 80</option></select><span class="err" id="e-effectif"></span></div>
+      <div class="champ"><label for="f-email">E-mail professionnel</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="e-email"><span class="err" id="e-email"></span></div>
+      <div class="champ"><label for="f-tel">Téléphone (facultatif)</label><input id="f-tel" name="telephone" type="tel" placeholder="20 365 147" autocomplete="tel" inputmode="tel" aria-describedby="e-tel"><span class="err" id="e-tel"></span></div>
+      <div class="champ large"><label for="f-message">Votre besoin (facultatif)</label><textarea id="f-message" name="message" rows="4" maxlength="1500" placeholder="Nombre de marques, régions couvertes, outil actuel…"></textarea><span class="compteur" id="c-message">0 / 1500</span></div>
+      <label class="accord"><input type="checkbox" id="f-accord" required aria-describedby="e-accord"><span>J'accepte que Zinova utilise ces informations pour répondre à ma demande, et seulement pour cela.</span></label>
+      <span class="err large" id="e-accord"></span>
+      <button class="btn btn-principal" type="submit">Demander une démonstration</button>
+      <div class="resultat" id="resultat" role="status" hidden></div>
+    </form>
+  </div>
+</section>
 </main>
 
+<footer class="pied">
+  <div class="cadre">
+    <svg xmlns="http://www.w3.org/2000/svg" class="logo" viewBox="0 0 465 120" role="img" aria-label="Zinova"><title>Zinova</title><defs><mask id="zn-gap-2"><rect width="120" height="120" fill="#fff"/><circle cx="100" cy="20" r="16.5" fill="#000"/></mask></defs><g mask="url(#zn-gap-2)"><rect x="10" y="14" width="96" height="96" rx="28" fill="#FFFFFF"/><path d="M38 46 H78 L40 82 H80" fill="none" stroke="#0F1F33" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></g><circle cx="100" cy="20" r="14" fill="#F2A541"/><path d="M187.70 99.50L143.70 99.50L143.70 88.30L168.70 58.30L167.70 57L143.80 57L143.80 44.70L186.90 44.70L186.90 55.90L161.80 86L162.80 87.20L187.70 87.20L187.70 99.50ZM212.60 99.50L196.60 99.50L196.60 56.50L189.30 56.50L189.30 44.70L212.60 44.70L212.60 99.50ZM202.80 39.30L202.80 39.30Q198.30 39.30 196.15 36.95Q194 34.60 194 31L194 31Q194 27.30 196.15 24.95Q198.30 22.60 202.80 22.60Q207.30 22.60 209.45 24.95Q211.60 27.30 211.60 31L211.60 31Q211.60 34.60 209.45 36.95Q207.30 39.30 202.80 39.30ZM239.90 99.50L223.90 99.50L223.90 44.70L236.60 44.70L236.60 58.50Q237.10 56.20 237.90 54.20L237.90 54.20Q240 48.60 244.40 45.80Q248.80 43 255.10 43L255.10 43L255.80 43Q265.40 43 270.45 49.25Q275.50 55.50 275.50 68.20L275.50 68.20L275.50 99.50L259.50 99.50L259.50 67.30Q259.50 62.90 256.90 60.10Q254.30 57.30 249.90 57.30L249.90 57.30Q245.40 57.30 242.65 60.15Q239.90 63 239.90 67.60L239.90 67.60L239.90 99.50ZM312.30 101.40L312.30 101.40Q305.10 101.40 299.50 99.15Q293.90 96.90 290.05 93Q286.20 89.10 284.20 84.05Q282.20 79 282.20 73.40L282.20 73.40L282.20 71.10Q282.20 65.40 284.25 60.25Q286.30 55.10 290.25 51.20Q294.20 47.30 299.80 45.05Q305.40 42.80 312.30 42.80L312.30 42.80Q319.40 42.80 324.95 45.05Q330.50 47.30 334.40 51.20Q338.30 55.10 340.40 60.25Q342.50 65.40 342.50 71.10L342.50 71.10L342.50 73.40Q342.50 79 340.50 84.05Q338.50 89.10 334.65 93Q330.80 96.90 325.20 99.15Q319.60 101.40 312.30 101.40ZM312.30 87.90L312.30 87.90Q317 87.90 320.10 85.90Q323.20 83.90 324.85 80.30Q326.50 76.70 326.50 72.30L326.50 72.30Q326.50 67.60 324.80 64.05Q323.10 60.50 319.95 58.40Q316.80 56.30 312.30 56.30L312.30 56.30Q307.90 56.30 304.70 58.40Q301.50 60.50 299.85 64.05Q298.20 67.60 298.20 72.30L298.20 72.30Q298.20 76.70 299.80 80.30Q301.40 83.90 304.60 85.90Q307.80 87.90 312.30 87.90ZM386.20 99.50L360.80 99.50L344.40 44.70L360.90 44.70L372.60 86.20L374.90 86.20L385.00 44.70L400.40 44.70L386.20 99.50ZM452.20 99.50L439.50 99.50L439.50 89Q438.80 91.10 437.90 92.80L437.90 92.80Q435.60 96.70 431.65 98.80Q427.70 100.90 422 100.90L422 100.90Q416.10 100.90 411.65 98.80Q407.20 96.70 404.70 92.75Q402.20 88.80 402.20 83.30L402.20 83.30Q402.20 77.30 405.30 73.45Q408.40 69.60 414 67.75Q419.60 65.90 426.90 65.90L426.90 65.90L436.80 65.90L436.80 65.70Q436.80 61.50 434.80 59.40Q432.80 57.30 428.40 57.30L428.40 57.30Q426.20 57.30 422.60 57.40Q419 57.50 415.20 57.70Q411.40 57.90 408.30 58.10L408.30 58.10L408.30 44.60Q410.60 44.40 413.70 44.20Q416.80 44 420.10 43.90Q423.40 43.80 426.30 43.80L426.30 43.80Q434.70 43.80 440.45 46.20Q446.20 48.60 449.20 53.45Q452.20 58.30 452.20 65.90L452.20 65.90L452.20 99.50ZM436.80 79.20L436.80 74.80L426.80 74.80Q422.60 74.80 420.35 76.85Q418.10 78.90 418.10 82.40L418.10 82.40Q418.10 85.70 420.35 87.75Q422.60 89.80 426.80 89.80L426.80 89.80Q429.50 89.80 431.65 88.85Q433.80 87.90 435.20 85.60Q436.60 83.30 436.80 79.20L436.80 79.20Z" fill="#FFFFFF"/></svg>
+    <p>Zinova, logiciel tunisien pour les laboratoires et distributeurs de parapharmacie.</p>
+    <p><a href="mailto:contact@zinova.tn">contact@zinova.tn</a></p>
+  </div>
+</footer>
 <script>
 (function(){
-  var roles={
-    direction:{a:"Ordinateur",t:"Direction",p:"Elle voit l'activité de toute la société et fixe les règles du jeu : objectifs, taux de prime, classes de pharmacies.",l:["Tableau de bord du mois : visites, animations, commandes, alertes","Rentabilité de chaque animation, frais compris","Classes A, B, C des pharmacies selon leur chiffre d'affaires","Produits vendus à date proche, par pharmacie","Objectifs mensuels et taux de prime","Primes calculées à partir des rapports validés, export Excel"]},
-    animation:{a:"Ordinateur",t:"Responsable animatrices",p:"Toutes les décisions arrivent dans une file, de la plus ancienne à la plus récente : rien n'attend sans qu'on le sache.",l:["Planning du lundi au samedi, conflits refusés","Affectation d'un mois entier, par quinzaine","Validation des check-in sur photo","Validation des rapports, date proche signalée","Demandes d'animation des délégués","Rentabilité et frais de transport"]},
-    animatrice:{a:"Smartphone",t:"Animatrice",p:"Elle prouve sa présence, remplit son rapport, suit ses commandes et voit sa prime se construire.",l:["Ma journée : pharmacie, horaire, consignes","Check-in avec photo prise en direct","Rapport de ventes, produit à date proche","Bon de livraison photographié","Ma prime du mois et mes mois précédents","Mon rang du mois, sans voir les autres"]},
-    delegues:{a:"Tablette en paysage",t:"Délégués et superviseurs",p:"Planifier, visiter, rendre compte et commander, même avec un réseau faible. Le superviseur encadre son groupe sans changer d'outil.",l:["Planning et compte rendu de visite","Alerte « déjà visitée » entre collègues","5 dernières visites d'une cible","Commande avec ou sans visite, grossiste au choix","Demande d'une fiche absente du référentiel","Mon groupe : inactivités, plannings, statistiques"]},
-    managers:{a:"Ordinateur",t:"Managers VP, VM et VMR",p:"Chaque Manager ne voit que ses équipes, découpées en groupes avec leurs superviseurs.",l:["Équipes, groupes et superviseurs","Visites réalisées par rapport à l'objectif","Inactivités validées en secours","Portefeuilles des délégués","Classes des médecins","Statistiques de l'équipe"]},
-    coordination:{a:"Ordinateur",t:"Coordination et marketing",p:"Une commande n'est plus un simple message : elle suit un circuit, avec une preuve et une décision.",l:["Toutes les commandes de la société","Comparaison avec la photo du bon de livraison","Validation, ou refus avec un motif","Correction et renvoi par l'auteur","Packs à préparer par le marketing","Historique de chaque commande"]},
-    rh:{a:"Ordinateur",t:"RH et assistantes",p:"Le matériel, les fiches et le suivi administratif, avec une trace de chaque action.",l:["Registre du matériel : PC, téléphones, tablettes, voitures","Bon de remise numéroté à faire signer","Frais de transport repris et relevés","Primes du mois et historique","Fiches employés, lues par la direction et dans le profil","Congés, soldes acquis chaque mois et certificat"]}
-  };
-  var onglets=[].slice.call(document.querySelectorAll('.onglet'));
-  var panneau=document.getElementById('p-role');
-  function afficher(cle, focus){
-    var r=roles[cle]; if(!r) return;
-    onglets.forEach(function(o){var sel=o.getAttribute('data-role')===cle;o.setAttribute('aria-selected',sel?'true':'false');o.tabIndex=sel?0:-1;if(sel){panneau.setAttribute('aria-labelledby',o.id);if(focus)o.focus();}});
-    document.getElementById('r-appareil').textContent=r.a;
-    document.getElementById('r-titre').textContent=r.t;
-    document.getElementById('r-texte').textContent=r.p;
-    var ul=document.getElementById('r-liste'); ul.innerHTML='';
-    r.l.forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
-  }
-  onglets.forEach(function(o,i){
-    o.tabIndex=i===0?0:-1;
-    o.addEventListener('click',function(){afficher(o.getAttribute('data-role'));});
-    o.addEventListener('keydown',function(e){
-      var j=null; if(e.key==='ArrowRight')j=(i+1)%onglets.length; if(e.key==='ArrowLeft')j=(i-1+onglets.length)%onglets.length;
-      if(j!==null){e.preventDefault();afficher(onglets[j].getAttribute('data-role'),true);}
-    });
-  });
-
-  var etapes=[].slice.call(document.querySelectorAll('[data-etape]'));
-  var reduit=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var n=0; etapes[0]&&etapes[0].classList.add('active');
-  if(!reduit&&etapes.length){setInterval(function(){etapes[n].classList.remove('active');n=(n+1)%etapes.length;etapes[n].classList.add('active');},2200);}
-
   var bouton=document.getElementById('copier'), etat=document.getElementById('copie-etat');
   bouton.addEventListener('click',function(){
     var texte=document.getElementById('adresse').textContent;
     function selectionner(){var s=window.getSelection(),r=document.createRange();r.selectNodeContents(document.getElementById('adresse'));s.removeAllRanges();s.addRange(r);etat.textContent="Adresse sélectionnée : copiez-la avec Ctrl+C.";}
     try{navigator.clipboard.writeText(texte).then(function(){etat.textContent="Adresse copiée.";},selectionner);}catch(e){selectionner();}
   });
-
   var f=document.getElementById('formulaire');
   var msg=document.getElementById('f-message'), cpt=document.getElementById('c-message');
   msg.addEventListener('input',function(){cpt.textContent=msg.value.length+' / 1500';});
@@ -510,11 +565,10 @@ footer{padding-block:28px;font-size:13.5px;color:var(--sur-nuit-2);display:flex;
     var res=document.getElementById('resultat');
     if(!ok){res.hidden=true;var premier=f.querySelector('[aria-invalid="true"]');if(premier)premier.focus();return;}
     var prenom=v('nom').split(/\s+/)[0];
-    res.textContent='Merci '+prenom+'. Votre demande est complète. Aperçu seulement : sur le site en ligne, ce bouton enverra votre demande à l\'équipe Zinova.';
+    res.textContent='Merci '+prenom+'. Votre demande est complète, mais ce formulaire n\'envoie rien pour l\'instant : écrivez-nous à contact@zinova.tn pour obtenir votre démonstration.';
     res.hidden=false;
   });
 })();
 </script>
-
 </body>
 </html>
